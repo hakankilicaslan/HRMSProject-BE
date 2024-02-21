@@ -1,0 +1,7 @@
+dependencies {
+    implementation libs.springBootDataJpa
+    implementation libs.postgres
+    implementation libs.springBootamqp
+   // implementation libs.springBootRabbitMQ
+
+}

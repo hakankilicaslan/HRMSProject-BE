@@ -1,0 +1,8 @@
+dependencies {
+    implementation libs.springBootDataMongoDB
+    implementation libs.springBootamqp
+    //implementation libs.springBootDataRedis
+    //implementation libs.springBootSecurity
+    //implementation libs.postgres
+    //implementation libs.springBootDataJpa
+}

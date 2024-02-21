@@ -1,0 +1,108 @@
+server:
+  port: 9094
+
+spring:
+  cloud:
+    config:
+      enabled: false
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: user
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: 1234
+    url: jdbc:postgresql://localhost:5432/HRMSAdminDb
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+rabbitmq:
+  auth-exchange: authExchange
+  admin-exchange: adminExchange
+  manager-exchange: managerExchange
+  employee-exchange: employeeExchange
+  guest-exchange: guestExchange
+  company-exchange: companyExchange
+  mail-exchange: mailExchange
+
+  guest-register-queue: guestRegisterQueue
+  guest-register-bindingKey: guestRegisterBindingKey
+
+  company-register-queue: companyRegisterQueue
+  company-register-bindingKey: companyRegisterBindingKey
+
+  mail-queue: mailQueue
+  mail-bindingKey: mailBindingKey
+
+  auth-update-queue: authUpdateQueue
+  auth-update-bindingKey: authUpdateBindingKey
+
+  auth-delete-queue: authDeleteQueue
+  auth-delete-bindingKey: authDeleteBindingKey
+
+  admin-save-queue: adminSaveQueue
+  admin-save-bindingKey: adminSaveBindingKey
+
+  admin-update-queue: adminUpdateQueue
+  admin-update-bindingKey: adminUpdateBindingKey
+
+  admin-delete-queue: adminDeleteQueue
+  admin-delete-bindingKey: adminDeleteBindingKey
+
+  manager-save-queue: managerSaveQueue
+  manager-save-bindingKey: managerSaveBindingKey
+
+  manager-update-queue: managerUpdateQueue
+  manager-update-bindingKey: managerUpdateBindingKey
+
+  manager-delete-queue: managerDeleteQueue
+  manager-delete-bindingKey: managerDeleteBindingKey
+
+  manager-forgot-password-queue: managerForgotPasswordQueue
+  manager-forgot-password-bindingKey: managerForgotPasswordBindingKey
+
+  manager-addCompany-queue: managerAddCompanyQueue
+  manager-addCompany-bindingKey: managerAddCompanyBindingKey
+
+  manager-updateCompany-queue: managerUpdateCompanyQueue
+  manager-updateCompany-bindingKey: managerUpdateCompanyBindingKey
+
+  manager-deleteCompany-queue: managerDeleteCompanyQueue
+  manager-deleteCompany-bindingKey: managerDeleteCompanyBindingKey
+
+  manager-addEmployee-queue: managerAddEmployeeQueue
+  manager-addEmployee-bindingKey: managerAddEmployeeBindingKey
+
+  manager-updateEmployee-queue: managerUpdateEmployeeQueue
+  manager-updateEmployee-bindingKey: managerUpdateEmployeeBindingKey
+
+  manager-deleteEmployee-queue: managerDeleteEmployeeQueue
+  manager-deleteEmployee-bindingKey: managerDeleteEmployeeBindingKey
+
+  employee-save-queue: employeeSaveQueue
+  employee-save-bindingKey: employeeSaveBindingKey
+
+  employee-update-queue: employeeUpdateQueue
+  employee-update-bindingKey: employeeUpdateBindingKey
+
+  employee-delete-queue: employeeDeleteQueue
+  employee-delete-bindingKey: employeeDeleteBindingKey
+
+  employee-forgot-password-queue: employeeForgotPasswordQueue
+  employee-forgot-password-bindingKey: employeeForgotPasswordBindingKey
+
+  guest-save-queue: guestSaveQueue
+  guest-save-bindingKey: guestSaveBindingKey
+
+  guest-update-queue: guestUpdateQueue
+  guest-update-bindingKey: guestUpdateBindingKey
+
+  guest-delete-queue: guestDeleteQueue
+  guest-delete-bindingKey: guestDeleteBindingKey
+
+  guest-forgot-password-queue: guestForgotPasswordQueue
+  guest-forgot-password-bindingKey: guestForgotPasswordBindingKey

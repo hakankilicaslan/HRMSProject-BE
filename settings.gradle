@@ -1,0 +1,13 @@
+rootProject.name = 'HRMS-Project-BE'
+include 'user-microservice'
+include 'auth-microservice'
+include 'config-server'
+include 'api-gateway-service'
+include 'company-service'
+include 'company-service'
+include 'guest-microservice'
+include 'employee-microservice'
+include 'manager-microservice'
+include 'admin-microservice'
+include 'company-service'
+
