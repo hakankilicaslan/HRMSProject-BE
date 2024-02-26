@@ -7,6 +7,7 @@ import org.hrms.exception.ErrorType;
 import org.hrms.exception.ManagerServiceException;
 import org.hrms.mapper.IManagerMapper;
 import org.hrms.rabbitmq.model.AuthDeleteModel;
+import org.hrms.rabbitmq.model.AuthForgotPasswordModel;
 import org.hrms.rabbitmq.model.AuthUpdateModel;
 import org.hrms.rabbitmq.producer.AuthDeleteProducer;
 import org.hrms.rabbitmq.producer.AuthUpdateProducer;
@@ -48,17 +49,56 @@ public class ManagerService extends ServiceManager<Manager, Long>  {
         if (optionalManager.isEmpty()) {
             throw new ManagerServiceException(ErrorType.USER_NOT_FOUND);
         }
-        Manager manager = optionalManager.get();
+        Manager updatedManager = optionalManager.get();
 
-        if (manager.getStatus().equals(EStatus.DELETED)) {
+        if (updatedManager.getStatus().equals(EStatus.DELETED)) {
             throw new ManagerServiceException(ErrorType.USER_ALREADY_DELETED);
         }
 
-        if (repository.existsByEmail(manager.getEmail()) || repository.existsByPhoneNumber(manager.getPhoneNumber()) || repository.existsByIdentityNumber(manager.getIdentityNumber())) {
+        if (repository.existsByEmail(dto.getEmail()) || repository.existsByPhoneNumber(dto.getPhoneNumber()) || repository.existsByIdentityNumber(dto.getIdentityNumber())) {
             throw new ManagerServiceException(ErrorType.PARAMETER_ALREADY_EXISTS);
         }
 
-        Manager updatedManager = IManagerMapper.INSTANCE.managerUpdateRequestDtoToManager(dto);
+        if (dto.getName() != null) {
+            updatedManager.setName(dto.getName());
+        }
+        if (dto.getSurname() != null) {
+            updatedManager.setSurname(dto.getSurname());
+        }
+        if (dto.getPhoneNumber() != null) {
+            updatedManager.setPhoneNumber(dto.getPhoneNumber());
+        }
+        if (dto.getIdentityNumber() != null) {
+            updatedManager.setIdentityNumber(dto.getIdentityNumber());
+        }
+        if (dto.getEmail() != null) {
+            updatedManager.setEmail(dto.getEmail());
+        }
+        if (dto.getPassword() != null) {
+            updatedManager.setPassword(dto.getPassword());
+        }
+        if (dto.getAddress() != null) {
+            updatedManager.setAddress(dto.getAddress());
+        }
+        if (dto.getCompanyName() != null) {
+            updatedManager.setCompanyName(dto.getCompanyName());
+        }
+        if (dto.getTitle() != null) {
+            updatedManager.setTitle(dto.getTitle());
+        }
+        if (dto.getSalary() != null) {
+            updatedManager.setSalary(dto.getSalary());
+        }
+        if (dto.getPhoto() != null) {
+            updatedManager.setPhoto(dto.getPhoto());
+        }
+        if (dto.getGender() != null) {
+            updatedManager.setGender(dto.getGender());
+        }
+        if (dto.getDateOfBirth() != null) {
+            updatedManager.setDateOfBirth(dto.getDateOfBirth());
+        }
+
         update(updatedManager);
 
         AuthUpdateModel authUpdateModel = IManagerMapper.INSTANCE.managerToAuthUpdateModel(updatedManager);
@@ -80,18 +120,21 @@ public class ManagerService extends ServiceManager<Manager, Long>  {
         }
         
         deletedManager.setStatus(EStatus.DELETED);
-        save(deletedManager);
+        update(deletedManager);
 
         authDeleteProducer.convertAndSend(AuthDeleteModel.builder()
                 .authId(deletedManager.getAuthId())
                 .status(deletedManager.getStatus())
                 .build());
 
-        return deletedManager.getName() + deletedManager.getSurname() + " user named has been deleted";
+        return deletedManager.getName() + " " + deletedManager.getSurname() + " user named has been deleted";
     }
 
     public List<FindAllManagersResponseDto> findAllManagers() {
-        return findAll().stream().map(IManagerMapper.INSTANCE::managerToFindAllManagersResponseDto).collect(Collectors.toList());
+        return findAll().stream()
+                .filter(item -> item.getStatus() == EStatus.ACTIVE)
+                .map(IManagerMapper.INSTANCE::managerToFindAllManagersResponseDto)
+                .collect(Collectors.toList());
     }
 
     public FindManagerByIdResponseDto findManagerById(Long id) {
@@ -101,7 +144,11 @@ public class ManagerService extends ServiceManager<Manager, Long>  {
             throw new ManagerServiceException(ErrorType.USER_NOT_FOUND);
         }
 
-        return IManagerMapper.INSTANCE.managerToFindManagerByIdResponseDto(optionalManager.get());
+        if(optionalManager.get().getStatus() == EStatus.ACTIVE) {
+            return IManagerMapper.INSTANCE.managerToFindManagerByIdResponseDto(optionalManager.get());
+        } else {
+            throw new ManagerServiceException(ErrorType.ACCOUNT_NOT_ACTIVE);
+        }
     }
 
     public FindManagerByIdResponseDto findManagerByAuthId(Long authId) {
@@ -111,7 +158,11 @@ public class ManagerService extends ServiceManager<Manager, Long>  {
             throw new ManagerServiceException(ErrorType.USER_NOT_FOUND);
         }
 
-        return IManagerMapper.INSTANCE.managerToFindManagerByIdResponseDto(optionalManager.get());
+        if(optionalManager.get().getStatus() == EStatus.ACTIVE) {
+            return IManagerMapper.INSTANCE.managerToFindManagerByIdResponseDto(optionalManager.get());
+        } else {
+            throw new ManagerServiceException(ErrorType.ACCOUNT_NOT_ACTIVE);
+        }
     }
 
     public FindManagerByIdResponseDto findManagerByCompanyId(Long companyId) {
@@ -121,7 +172,11 @@ public class ManagerService extends ServiceManager<Manager, Long>  {
             throw new ManagerServiceException(ErrorType.USER_NOT_FOUND);
         }
 
-        return IManagerMapper.INSTANCE.managerToFindManagerByIdResponseDto(optionalManager.get());
+        if(optionalManager.get().getStatus() == EStatus.ACTIVE) {
+            return IManagerMapper.INSTANCE.managerToFindManagerByIdResponseDto(optionalManager.get());
+        } else {
+            throw new ManagerServiceException(ErrorType.ACCOUNT_NOT_ACTIVE);
+        }
     }
 
     public List<FindAllManagersResponseDto> findManagersByCompanyName(String companyName) {
@@ -131,7 +186,31 @@ public class ManagerService extends ServiceManager<Manager, Long>  {
         }
         List<Manager> managersList = repository.findManagersByCompanyName(companyName);
 
-        return managersList.stream().map(IManagerMapper.INSTANCE::managerToFindAllManagersResponseDto).collect(Collectors.toList());
+        return managersList.stream()
+                .filter(item -> item.getStatus() == EStatus.ACTIVE)
+                .map(IManagerMapper.INSTANCE::managerToFindAllManagersResponseDto)
+                .collect(Collectors.toList());
     }
 
+    public void activeStatus(Long authId) {
+
+        Optional<Manager> optionalManager = repository.findOptionalByAuthId(authId);
+        if (optionalManager.isEmpty()) {
+            throw new ManagerServiceException(ErrorType.USER_NOT_FOUND);
+        }
+
+        optionalManager.get().setStatus(EStatus.ACTIVE);
+        update(optionalManager.get());
+    }
+
+    public void updatePassword(AuthForgotPasswordModel model) {
+
+        Optional<Manager> optionalManager = repository.findOptionalByAuthId(model.getAuthId());
+        if (optionalManager.isEmpty()) {
+            throw new ManagerServiceException(ErrorType.USER_NOT_FOUND);
+        }
+
+        optionalManager.get().setPassword(model.getPassword());
+        update(optionalManager.get());
+    }
 }

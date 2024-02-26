@@ -36,7 +36,6 @@ public class EmployeeCreateModel implements Serializable {
     private String email;
     private String password;
     private String phoneNumber;
-    private String identityNumber;
     private ERole role;
     private EGender gender;
     private EStatus status;

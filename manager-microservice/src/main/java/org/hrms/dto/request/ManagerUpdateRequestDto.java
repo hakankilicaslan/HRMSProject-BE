@@ -1,6 +1,9 @@
 package org.hrms.dto.request;
 
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -30,20 +33,30 @@ public class ManagerUpdateRequestDto {
     private Long id;
 
     /*
-     * @Size anotasyonu da @NotEmpty gibi bir kısıtlama anotasyonudur ve kullanıcının girdiği name değişkeninin minimum 3 maksimum 20 karakterde olmasını sağlar.
-     * message = "Name must be between 3 and 20 characters." diyerekte karakter sayısı tutmadığında bu mesajı içeren bir doğrulama hatası gönderir.
+     * @Size anotasyonu da bir kısıtlama anotasyonudur ve kullanıcının girdiği name değişkeninin minimum 3 maksimum 40 karakterde olmasını sağlar.
+     * message = "Name must be between 3 and 40 characters." diyerekte karakter sayısı tutmadığında bu mesajı içeren bir doğrulama hatası gönderir.
      */
-    @Size(min = 3, max = 20, message = "Name must be between 3 and 20 characters.")
+    @Size(min = 3, max = 40, message = "Name must be between 3 and 40 characters.")
     private String name;
 
-    @Size(min = 3, max = 20, message = "Surname must be between 3 and 20 characters.")
+    @Size(min = 3, max = 40, message = "Surname must be between 3 and 40 characters.")
     private String surname;
+
+    //@Size kısmında hem min hem max 11 diyerek kimlik numarasının 11 karakter olması ve @Pattern kısmında regexp içinde de sadece rakam girilmesi şartını koyuyoruz.
+    @Size(min = 11, max = 11, message = "Phone number must be 11 characters.")
+    @Pattern(regexp = "[0-9]+", message = "Phone number must contain only digits.")
+    private String phoneNumber;
+
+    @Size(min = 11, max = 11, message = "Identity number must be 11 characters.")
+    @Pattern(regexp = "[0-9]+", message = "Identity number must contain only digits.")
+    private String identityNumber;
 
     /*
      * @Email anotasyonu bir kısıtlama anotasyonudur ve kullanıcının girdiği e-posta adresinin doğru formatını kontrol etmek için kullanılır.
      * message = "Please enter a valid email address." diyerekte geçerli bir e-posta adresi girilmezse bu mesajı içeren bir doğrulama hatası gönderir.
      */
     @Email(message = "Please enter a valid email address.")
+    @Size(min = 3, max = 40, message = "Email must be between 3 and 40 characters.")
     private String email;
 
     /*
@@ -55,21 +68,26 @@ public class ManagerUpdateRequestDto {
             regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=*!])(?=\\S+$).{8,32}$")
     private String password;
 
-    //@Size kısmında hem min hem max 11 diyerek kimlik numarasının 11 karakter olması ve @Pattern kısmında regexp içinde de sadece rakam girilmesi şartını koyuyoruz.
-    @Size(min = 11, max = 11, message = "Phone number must be 11 characters.")
-    @Pattern(regexp = "[0-9]+", message = "Phone number must contain only digits.")
-    private String phoneNumber;
-
-    @Size(min = 11, max = 11, message = "Identity number must be 11 characters.")
-    @Pattern(regexp = "[0-9]+", message = "Identity number must contain only digits.")
-    private String identityNumber;
-
+    @Size(min = 3, max = 100, message = "Address must be between 3 and 100 characters.")
     private String address;
+
+    @Size(min = 3, max = 40, message = "Company name must be between 3 and 40 characters.")
     private String companyName;
+
+    @Size(min = 3, max = 40, message = "Title must be between 3 and 40 characters.")
     private String title;
+
     private String photo;
+
     private Double salary;
-    private LocalDate dateOfBirth;
+
     private EGender gender;
+
+    /*
+     * @Temporal, JPA tarafından sağlanan ve veritabanında bir tarih/saat alanını nasıl saklayacağını belirttiğimiz bir anotasyondur.
+     * Değişkenimizin türü bir LocalDate yani DATE olduğu için ve saat bilgisi içermediği için TemporalType.DATE olarak işaretliyoruz.
+     */
+    @Temporal(TemporalType.DATE)
+    private LocalDate dateOfBirth;
 
 }

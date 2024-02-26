@@ -7,6 +7,7 @@ import org.hrms.exception.ErrorType;
 import org.hrms.exception.GuestServiceException;
 import org.hrms.mapper.IGuestMapper;
 import org.hrms.rabbitmq.model.AuthDeleteModel;
+import org.hrms.rabbitmq.model.AuthForgotPasswordModel;
 import org.hrms.rabbitmq.model.AuthUpdateModel;
 import org.hrms.rabbitmq.producer.AuthDeleteProducer;
 import org.hrms.rabbitmq.producer.AuthUpdateProducer;
@@ -16,7 +17,6 @@ import org.hrms.repository.enums.EStatus;
 import org.hrms.utility.ServiceManager;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,8 +49,9 @@ public class GuestService extends ServiceManager<Guest, Long> {
         if (optionalGuest.isEmpty()) {
             throw new GuestServiceException(ErrorType.USER_NOT_FOUND);
         }
+        Guest updatedGuest = optionalGuest.get();
 
-        if (optionalGuest.get().getStatus().equals(EStatus.DELETED)) {
+        if (updatedGuest.getStatus().equals(EStatus.DELETED)) {
             throw new GuestServiceException(ErrorType.USER_ALREADY_DELETED);
         }
 
@@ -58,7 +59,25 @@ public class GuestService extends ServiceManager<Guest, Long> {
             throw new GuestServiceException(ErrorType.EMAIL_OR_PHONE_ALREADY_EXISTS);
         }
 
-        Guest updatedGuest = IGuestMapper.INSTANCE.guestUpdateRequestDtoToGuest(dto);
+        if (dto.getName() != null) {
+            updatedGuest.setName(dto.getName());
+        }
+        if (dto.getSurname() != null) {
+            updatedGuest.setSurname(dto.getSurname());
+        }
+        if (dto.getPhoneNumber() != null) {
+            updatedGuest.setPhoneNumber(dto.getPhoneNumber());
+        }
+        if (dto.getEmail() != null) {
+            updatedGuest.setEmail(dto.getEmail());
+        }
+        if (dto.getPassword() != null) {
+            updatedGuest.setPassword(dto.getPassword());
+        }
+        if (dto.getGender() != null) {
+            updatedGuest.setGender(dto.getGender());
+        }
+
         update(updatedGuest);
 
         AuthUpdateModel authUpdateModel = IGuestMapper.INSTANCE.guestToAuthUpdateModel(updatedGuest);
@@ -89,19 +108,22 @@ public class GuestService extends ServiceManager<Guest, Long> {
         }
 
         deletedGuest.setStatus(EStatus.DELETED);
-        save(deletedGuest);
+        update(deletedGuest);
 
         authDeleteProducer.convertAndSend(AuthDeleteModel.builder()
                 .authId(deletedGuest.getAuthId())
                 .status(deletedGuest.getStatus())
                 .build());
 
-        return deletedGuest.getName() + deletedGuest.getSurname() + " user named has been deleted";
+        return deletedGuest.getName() + " " + deletedGuest.getSurname() + " user named has been deleted";
 
     }
 
     public List<FindAllGuestsResponseDto> findAllGuests() {
-        return findAll().stream().map(IGuestMapper.INSTANCE::guestToFindAllGuestsResponseDto).collect(Collectors.toList());
+        return findAll().stream()
+                .filter(item -> item.getStatus() == EStatus.ACTIVE)
+                .map(IGuestMapper.INSTANCE::guestToFindAllGuestsResponseDto)
+                .collect(Collectors.toList());
     }
 
     public FindGuestByIdResponseDto findGuestById(Long id) {
@@ -111,16 +133,46 @@ public class GuestService extends ServiceManager<Guest, Long> {
             throw new GuestServiceException(ErrorType.USER_NOT_FOUND);
         }
 
-        return IGuestMapper.INSTANCE.guestToFindGuestByIdResponseDto(optionalGuest.get());
+        if(optionalGuest.get().getStatus() == EStatus.ACTIVE) {
+            return IGuestMapper.INSTANCE.guestToFindGuestByIdResponseDto(optionalGuest.get());
+        } else {
+            throw new GuestServiceException(ErrorType.ACCOUNT_NOT_ACTIVE);
+        }
     }
 
     public FindGuestByIdResponseDto findGuestByAuthId(Long authId) {
 
-        Optional<Guest> optionalGuest = repository.findByAuthId(authId);
+        Optional<Guest> optionalGuest = repository.findOptionalByAuthId(authId);
         if (optionalGuest.isEmpty()) {
             throw new GuestServiceException(ErrorType.USER_NOT_FOUND);
         }
 
-        return IGuestMapper.INSTANCE.guestToFindGuestByIdResponseDto(optionalGuest.get());
+        if(optionalGuest.get().getStatus() == EStatus.ACTIVE) {
+            return IGuestMapper.INSTANCE.guestToFindGuestByIdResponseDto(optionalGuest.get());
+        } else {
+            throw new GuestServiceException(ErrorType.ACCOUNT_NOT_ACTIVE);
+        }
     }
+
+    public void activeStatus(Long authId) {
+
+        Optional<Guest> optionalGuest = repository.findOptionalByAuthId(authId);
+        if (optionalGuest.isEmpty()) {
+            throw new GuestServiceException(ErrorType.USER_NOT_FOUND);
+        }
+
+        optionalGuest.get().setStatus(EStatus.ACTIVE);
+        update(optionalGuest.get());
+    }
+
+    public void updatePassword(AuthForgotPasswordModel model) {
+
+        Optional<Guest> optionalGuest = repository.findOptionalByAuthId(model.getAuthId());
+        if (optionalGuest.isEmpty()) {
+            throw new GuestServiceException(ErrorType.USER_NOT_FOUND);
+        }
+
+        optionalGuest.get().setPassword(model.getPassword());
+    }
+
 }

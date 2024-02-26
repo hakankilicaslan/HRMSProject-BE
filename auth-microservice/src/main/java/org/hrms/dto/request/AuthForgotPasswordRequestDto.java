@@ -2,6 +2,7 @@ package org.hrms.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,14 +26,18 @@ import lombok.NoArgsConstructor;
 public class AuthForgotPasswordRequestDto {
 
     /*
-     * @NotEmpty, Java için Bean Validation API'si tarafından sağlanan bir kısıtlama(constraint) anotasyonudur ve gerekli alanın boş geçilemeyeceğini belirtir.
-     * @NotEmpty kullanımında gerekli alan null olamaz ve boş bırakılamaz yani en az 1 karakter girilmelidir ama bu karakter boşluk bile olabilir.
-     *
-     * @Email anotasyonu da @NotEmpty gibi bir kısıtlama anotasyonudur ve kullanıcının girdiği e-posta adresinin doğru formatını kontrol etmek için kullanılır.
+     * @NotNull, @NotEmpty ve @NotBlank Java için Bean Validation API'si tarafından sağlanan bir kısıtlama(constraint) anotasyonudur.
+     * @NotNull, bir alanın null olmadığını kontrol eder ancak içeriğin boş olup olmadığını kontrol etmez.
+     * @NotEmpty, bir alanın null olmadığını ve içeriğinin boş olmadığını kontrol eder. En az bir karakter olmalıdır ama bu karakter boşluk bile olabilir.
+     * @NotBlank, bir alanın null olmadığını, içeriğinin boş olmadığını ve içeriğin sadece boşluklardan oluşmadığını kontrol eder.
+     */
+
+    /*
+     * @Email anotasyonu bir kısıtlama anotasyonudur ve kullanıcının girdiği e-posta adresinin doğru formatını kontrol etmek için kullanılır.
      * message = "Please enter a valid email address." diyerekte geçerli bir e-posta adresi girilmezse bu mesajı içeren bir doğrulama hatası gönderir.
      */
-    @NotEmpty
     @Email(message = "Please enter a valid email address.")
+    @Size(min = 3, max = 40, message = "Email must be between 3 and 40 characters.")
     private String email;
 
 }

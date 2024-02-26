@@ -26,6 +26,6 @@ public class GuestRegisterResponseDto {
     private String name;
     private String surname;
     private String email;
-    private String activationCode;
+    private String phoneNumber;
     private EStatus status;
 }

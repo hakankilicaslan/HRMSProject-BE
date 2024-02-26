@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hrms.repository.enums.EGender;
+import org.hrms.repository.enums.ERole;
+import org.hrms.repository.enums.EStatus;
 
 import java.io.Serializable;
 
@@ -35,5 +37,8 @@ public class AuthUpdateModel implements Serializable {
     private String email;
     private String password;
     private String phoneNumber;
+    private ERole role;
     private EGender gender;
+    private EStatus status;
+    private Long createdDate;
 }

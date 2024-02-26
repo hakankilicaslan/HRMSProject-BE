@@ -1,11 +1,15 @@
 package org.hrms.rabbitmq.consumer;
 
 import lombok.RequiredArgsConstructor;
+import org.hrms.exception.EmployeeServiceException;
+import org.hrms.exception.ErrorType;
 import org.hrms.rabbitmq.model.AuthForgotPasswordModel;
 import org.hrms.repository.entity.Employee;
 import org.hrms.service.EmployeeService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /*
  * @Service annotasyonu, Spring Framework'te servis sınıflarını işaretlemek için kullanılan bir anotasyondur.
@@ -27,11 +31,7 @@ public class EmployeeForgotPasswordConsumer {
      */
     @RabbitListener(queues = "${rabbitmq.employee-forgot-password-queue}")
     public void updatePasswordFromQueue(AuthForgotPasswordModel model){
-        Employee employee = Employee.builder()
-                .authId(model.getAuthId())
-                .password(model.getPassword())
-                .build();
-        employeeService.update(employee);
+        employeeService.updatePassword(model);
     }
 
 }

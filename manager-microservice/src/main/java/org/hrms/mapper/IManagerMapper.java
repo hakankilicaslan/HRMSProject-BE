@@ -27,7 +27,6 @@ public interface IManagerMapper {
      */
     IManagerMapper INSTANCE = Mappers.getMapper(IManagerMapper.class);
 
-    Manager managerUpdateRequestDtoToManager(ManagerUpdateRequestDto dto);
     AuthUpdateModel managerToAuthUpdateModel(Manager manager);
     FindAllManagersResponseDto managerToFindAllManagersResponseDto(Manager manager);
     FindManagerByIdResponseDto managerToFindManagerByIdResponseDto(Manager manager);

@@ -30,7 +30,6 @@ public class FindAllResponseDto {
     private String email;
     private String phoneNumber;
     private String identityNumber;
-    private String activationCode;
     private ERole role;
     private EGender gender;
     private EStatus status;

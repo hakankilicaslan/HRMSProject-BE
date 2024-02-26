@@ -38,5 +38,4 @@ public class GuestRegisterModel implements Serializable {
     private String phoneNumber;
     private EGender gender;
     private ERole role;
-
 }

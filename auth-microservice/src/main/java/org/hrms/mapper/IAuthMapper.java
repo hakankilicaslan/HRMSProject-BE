@@ -6,6 +6,7 @@ import org.hrms.dto.response.CompanyRegisterResponseDto;
 import org.hrms.dto.response.FindAllResponseDto;
 import org.hrms.dto.response.FindByIdResponseDto;
 import org.hrms.dto.response.GuestRegisterResponseDto;
+import org.hrms.rabbitmq.model.AdminSaveModel;
 import org.hrms.rabbitmq.model.AuthUpdateModel;
 import org.hrms.rabbitmq.model.EmployeeCreateModel;
 import org.hrms.repository.entity.Auth;
@@ -39,6 +40,7 @@ public interface IAuthMapper {
     FindAllResponseDto authToFindAllResponseDto(Auth auth);
     FindByIdResponseDto authToFindByIdResponseDto(Auth auth);
     Auth employeeCreateModelToAuth(EmployeeCreateModel model);
+    Auth  adminSaveModelToAuth(AdminSaveModel model);
 
     /*
      * Burada AuthUpdateModel sınıfındaki authId'yi Auth sınıfındaki id'ye eşitlemiş oluyoruz. İsimleri aynı olmadığı için eşleşmediğinden ignore ediyor.

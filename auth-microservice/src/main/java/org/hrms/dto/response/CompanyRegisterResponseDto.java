@@ -27,9 +27,8 @@ public class CompanyRegisterResponseDto {
     private Long id;
     private String name;
     private String surname;
+    private String email;
     private String phoneNumber;
     private String identityNumber;
-    private String email;
-    private String activationCode;
     private EStatus status;
 }

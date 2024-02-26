@@ -30,7 +30,7 @@ public class JwtTokenManager {
     @Value("${authserviceconfig.secrets.issuer}")
     String issuer;
 
-    private final Long expirationTime=1000L*60*1; // 1 dakika boyunca token'imiz aktif olacak süre bittiğinde token'ın geçerliliği bitecek.
+    private final Long expirationTime=1000L*60*13; // 13 dakika boyunca token'imiz aktif olacak süre bittiğinde token'ın geçerliliği bitecek.
 
     //JWT sınıfı üzerinden create() metodunu çağırarak gerekli parametreleri veriyoruz ve geriye optional olarak String bir token dönüyoruz.
     public Optional<String> createToken(Long id) {
@@ -137,7 +137,7 @@ public class JwtTokenManager {
             throw new AuthServiceException(ErrorType.INVALID_TOKEN);
         }
 
-        String  role=decodedJWT.getClaim("role").asString();
+        String role=decodedJWT.getClaim("role").asString();
         return Optional.of(role);
     }
 

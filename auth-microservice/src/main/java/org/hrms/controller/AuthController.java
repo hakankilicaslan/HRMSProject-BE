@@ -112,10 +112,22 @@ public class AuthController {
         return ResponseEntity.ok(authService.findUserById(id));
     }
 
-    @DeleteMapping(DELETE_BY_ID)
+    /*
+     * @RequestParam anotasyonu bir HTTP isteği sırasında URL'den veya form parametrelerinden bir parametreyi almak için kullanılır.
+     * Bu anotasyon, belirli bir parametrenin zorunlu olup olmadığını belirtmek için kullanılır.
+     * required = false parametresi, belirtilen parametrenin isteğe bağlı olduğunu belirtir yani, bu parametre ile işaretlenmiş bir parametrenin, HTTP isteğinde bulunması gerekmez.
+     * Eğer istek gönderilirken bu parametre sağlanmazsa, ilgili controller metodu çalışacak ve bu parametre null olarak alınacaktır ve metot normal şekilde çalışacaktır.
+     */
+    @GetMapping(ACTIVATE)
+    public ResponseEntity<String> activateCode(@RequestParam String token){
+        return ResponseEntity.ok(authService.activateCode(token));
+    }
+
+    //Delete işlemini diğer service'lerden yapıp sadece auth-microservice tarafında güncelleme yapacağımız için buradan kaldırıyoruz.
+    /*@DeleteMapping(DELETE_BY_ID)
     public ResponseEntity<String> softDelete(@PathVariable Long id){
         return ResponseEntity.ok(authService.softDelete(id));
-    }
+    }*/
 
     /*
      * @PathVariable ile @RequestParam -> Her ikisi de HTTP isteklerinden parametre almak için kullanılır ancak alınan parametrelerin türleri ve alındıkları yerler farklıdır.

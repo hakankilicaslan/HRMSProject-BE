@@ -36,6 +36,12 @@ rabbitmq:
   mail-queue: mailQueue
   mail-bindingKey: mailBindingKey
 
+  mail-forgot-password-queue: mailForgotPasswordQueue
+  mail-forgot-password-bindingKey: mailForgotPasswordBindingKey
+
+  mail-create-employee-queue: mailCreateEmployeeQueue
+  mail-create-employee-bindingKey: mailCreateEmployeeBindingKey
+
   auth-update-queue: authUpdateQueue
   auth-update-bindingKey: authUpdateBindingKey
 
@@ -51,6 +57,9 @@ rabbitmq:
   admin-delete-queue: adminDeleteQueue
   admin-delete-bindingKey: adminDeleteBindingKey
 
+  admin-set-authid-queue: adminSetAuthIdQueue
+  admin-set-authid-bindingKey: adminSetAuthIdBindingKey
+
   manager-save-queue: managerSaveQueue
   manager-save-bindingKey: managerSaveBindingKey
 
@@ -59,6 +68,9 @@ rabbitmq:
 
   manager-delete-queue: managerDeleteQueue
   manager-delete-bindingKey: managerDeleteBindingKey
+
+  manager-activate-status-queue: managerActivateStatusQueue
+  manager-activate-status-bindingKey: managerActivateStatusBindingKey
 
   manager-forgot-password-queue: managerForgotPasswordQueue
   manager-forgot-password-bindingKey: managerForgotPasswordBindingKey
@@ -93,6 +105,9 @@ rabbitmq:
   employee-forgot-password-queue: employeeForgotPasswordQueue
   employee-forgot-password-bindingKey: employeeForgotPasswordBindingKey
 
+  employee-set-authid-queue: employeeSetAuthIdQueue
+  employee-set-authid-bindingKey: employeeSetAuthIdBindingKey
+
   guest-save-queue: guestSaveQueue
   guest-save-bindingKey: guestSaveBindingKey
 
@@ -101,6 +116,9 @@ rabbitmq:
 
   guest-delete-queue: guestDeleteQueue
   guest-delete-bindingKey: guestDeleteBindingKey
+
+  guest-activate-status-queue: guestActivateStatusQueue
+  guest-activate-status-bindingKey: guestActivateStatusBindingKey
 
   guest-forgot-password-queue: guestForgotPasswordQueue
   guest-forgot-password-bindingKey: guestForgotPasswordBindingKey

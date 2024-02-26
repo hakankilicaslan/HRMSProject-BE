@@ -30,5 +30,5 @@ import java.io.Serializable;
 @Builder
 public class AuthDeleteModel implements Serializable {
     private Long authId;
-    private EStatus eStatus;
+    private EStatus status;
 }

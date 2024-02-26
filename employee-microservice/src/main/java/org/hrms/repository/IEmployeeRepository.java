@@ -30,5 +30,6 @@ public interface IEmployeeRepository extends JpaRepository<Employee,Long> {
     Optional<Employee> findOptionalByCompanyId(Long companyId); //Parametre olarak girilen companyId'ye göre veritabanını kontrol edip geriye optional olarak bir Employee dönüyor.
     Boolean existsByCompanyName(String companyName); //Parametre olarak girilen şirket adının veritabanında olup olmadığını kontrol ediyoruz.
     List<Employee> findEmployeesByCompanyName(String companyName); //Parametre olarak girilen şirket adına sahip kullanıcıların bilgilerini Employee listesi olarak dönüyor.
+    Optional<Employee> findOptionalByEmail(String email); //Parametre olarak girilen email'e göre veritabanını kontrol edip geriye optional olarak bir Employee dönüyor.
 
 }

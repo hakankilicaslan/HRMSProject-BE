@@ -34,8 +34,14 @@ public class AuthService extends ServiceManager<Auth, Long> {
     private final GuestForgotPasswordProducer guestForgotPasswordProducer;
     private final EmployeeForgotPasswordProducer employeeForgotPasswordProducer;
     private final ManagerForgotPasswordProducer managerForgotPasswordProducer;
+    private final EmployeeCreateSetAuthIdProducer employeeCreateSetAuthIdProducer;
+    private final MailSenderProducer mailSenderProducer;
+    private final ManagerActivateStatusProducer managerActivateStatusProducer;
+    private final GuestActivateStatusProducer guestActivateStatusProducer;
+    private final MailForgotPasswordProducer mailForgotPasswordProducer;
+    private final AdminSaveSetAuthIdProducer adminSaveSetAuthIdProducer;
 
-    public AuthService(IAuthRepository repository, JwtTokenManager jwtTokenManager, GuestRegisterProducer guestRegisterProducer, CompanyRegisterProducer companyRegisterProducer, GuestForgotPasswordProducer guestForgotPasswordProducer, EmployeeForgotPasswordProducer employeeForgotPasswordProducer, ManagerForgotPasswordProducer managerForgotPasswordProducer) {
+    public AuthService(IAuthRepository repository, JwtTokenManager jwtTokenManager, GuestRegisterProducer guestRegisterProducer, CompanyRegisterProducer companyRegisterProducer, GuestForgotPasswordProducer guestForgotPasswordProducer, EmployeeForgotPasswordProducer employeeForgotPasswordProducer, ManagerForgotPasswordProducer managerForgotPasswordProducer, EmployeeCreateSetAuthIdProducer employeeCreateSetAuthIdProducer, MailSenderProducer mailSenderProducer, ManagerActivateStatusProducer managerActivateStatusProducer, GuestActivateStatusProducer guestActivateStatusProducer, MailForgotPasswordProducer mailForgotPasswordProducer, AdminSaveSetAuthIdProducer adminSaveSetAuthIdProducer) {
         super(repository);
         this.repository = repository;
         this.jwtTokenManager = jwtTokenManager;
@@ -44,6 +50,12 @@ public class AuthService extends ServiceManager<Auth, Long> {
         this.guestForgotPasswordProducer = guestForgotPasswordProducer;
         this.employeeForgotPasswordProducer = employeeForgotPasswordProducer;
         this.managerForgotPasswordProducer = managerForgotPasswordProducer;
+        this.employeeCreateSetAuthIdProducer = employeeCreateSetAuthIdProducer;
+        this.mailSenderProducer = mailSenderProducer;
+        this.managerActivateStatusProducer = managerActivateStatusProducer;
+        this.guestActivateStatusProducer = guestActivateStatusProducer;
+        this.mailForgotPasswordProducer = mailForgotPasswordProducer;
+        this.adminSaveSetAuthIdProducer = adminSaveSetAuthIdProducer;
     }
 
     /*
@@ -77,6 +89,8 @@ public class AuthService extends ServiceManager<Auth, Long> {
                 .build();
         guestRegisterProducer.convertAndSend(guestRegisterModel);
 
+        activateAccount(auth);
+
         return IAuthMapper.INSTANCE.authToGuestRegisterResponseDto(auth);
     }
 
@@ -88,9 +102,6 @@ public class AuthService extends ServiceManager<Auth, Long> {
         }
         if (repository.existsByPhoneNumber(dto.getPhoneNumber())){
             throw new AuthServiceException(ErrorType.PHONE_NUMBER_ALREADY_EXISTS);
-        }
-        if (repository.existsByIdentityNumber(dto.getIdentityNumber())){
-            throw new AuthServiceException(ErrorType.IDENTITY_NUMBER_ALREADY_EXISTS);
         }
 
         Auth auth = IAuthMapper.INSTANCE.companyRegisterRequestDtoToAuth(dto);
@@ -113,9 +124,81 @@ public class AuthService extends ServiceManager<Auth, Long> {
                 .build();
         companyRegisterProducer.convertAndSend(companyRegisterModel);
 
+        activateAccount(auth);
+
         return IAuthMapper.INSTANCE.authToCompanyRegisterResponseDto(auth);
     }
 
+    public void activateAccount(Auth auth){
+
+        Optional<String> optionalToken = jwtTokenManager.createToken(auth.getId(), auth.getRole());
+        if (optionalToken.isEmpty()){
+            throw new AuthServiceException(ErrorType.TOKEN_NOT_CREATED);
+        }
+
+        String activationLink = "http://localhost:9090/api/v1/auth/activate?token=" + optionalToken.get();
+        try {
+            mailSenderProducer.convertAndSend(MailSenderModel.builder()
+                    .email(auth.getEmail())
+                    .activationLink(activationLink)
+                    .build());
+            System.out.println("Mail sent successfully.");
+        } catch (Exception e) {
+            System.err.println("Error sending mail: " + e.getMessage());
+            e.printStackTrace();
+        }
+        System.out.println(activationLink);
+    }
+
+    public String activateCode(String token) {
+
+        Optional<Long> optionalIdFromToken = jwtTokenManager.decodeToken(token);
+        if (optionalIdFromToken.isEmpty()) {
+            throw new AuthServiceException(ErrorType.INVALID_TOKEN_FORMAT);
+        }
+
+        Optional<Auth> optionalAuth = findById(optionalIdFromToken.get());
+        if (optionalAuth.isEmpty()) {
+            throw new AuthServiceException(ErrorType.USER_NOT_FOUND);
+        }
+
+        return statusControl(optionalAuth.get());
+    }
+
+    private String statusControl(Auth auth) {
+        switch (auth.getStatus()) {
+            case ACTIVE -> {
+                return "Your account has already been activated. Your role: " + auth.getRole();
+            }
+            case PENDING -> {
+                auth.setStatus(EStatus.ACTIVE);
+                update(auth);
+
+                ActivateStatusModel activateStatusModel = ActivateStatusModel.builder()
+                        .authId(auth.getId())
+                        .build();
+
+                if(auth.getRole() == ERole.GUEST) {
+                    guestActivateStatusProducer.convertAndSend(activateStatusModel);
+                } else if(auth.getRole() == ERole.MANAGER) {
+                    managerActivateStatusProducer.convertAndSend(activateStatusModel);
+                } else {
+                    throw new AuthServiceException(ErrorType.INVALID_ROLE);
+                }
+
+                return "Your account has been successfully activated. Your role: " + auth.getRole();
+            }
+            case BANNED -> {
+                throw new AuthServiceException(ErrorType.ACCOUNT_BANNED);
+            }
+            case DELETED -> {
+                throw new AuthServiceException(ErrorType.USER_ALREADY_DELETED);
+            }
+            default -> {
+                throw new AuthServiceException(ErrorType.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
 
     public AuthLoginResponseDto login(AuthLoginRequestDto dto) {
 
@@ -149,7 +232,7 @@ public class AuthService extends ServiceManager<Auth, Long> {
 
         String randomPassword = PasswordGenerator.generatePassword();
         auth.setPassword(randomPassword);
-        save(auth);
+        update(auth);
 
         AuthForgotPasswordModel authForgotPasswordModel = AuthForgotPasswordModel.builder()
                 .authId(auth.getId())
@@ -161,20 +244,24 @@ public class AuthService extends ServiceManager<Auth, Long> {
         } else if(auth.getRole() == ERole.EMPLOYEE) {
             employeeForgotPasswordProducer.convertAndSend(authForgotPasswordModel);
         } else if(auth.getRole() == ERole.MANAGER) {
-            managerForgotPasswordProducer.convertAndSend(authForgotPasswordModel); //MANAGER SERVİCE İ YAZINCA AuthForgotPasswordModel EKLENECEK.
+            managerForgotPasswordProducer.convertAndSend(authForgotPasswordModel);
         } else {
             throw new AuthServiceException(ErrorType.INVALID_ROLE);
         }
 
-        return "Password reset successful. New password is: " + randomPassword;
+        MailForgotPasswordModel mailForgotPasswordModel = MailForgotPasswordModel.builder()
+                .email(auth.getEmail())
+                .password(auth.getPassword())
+                .build();
+        mailForgotPasswordProducer.convertAndSend(mailForgotPasswordModel);
+
+        return "Password reset successful. Your new password has been sent to your e-mail address.";
     }
 
     public List<FindAllResponseDto> findAllUsers(String token) {
 
-        Optional<Long> optionalIdFromToken;
-        try {
-            optionalIdFromToken = jwtTokenManager.decodeToken(token);
-        } catch (Exception e) {
+        Optional<Long> optionalIdFromToken = jwtTokenManager.decodeToken(token);
+        if (optionalIdFromToken.isEmpty()) {
             throw new AuthServiceException(ErrorType.INVALID_TOKEN_FORMAT);
         }
 
@@ -182,7 +269,10 @@ public class AuthService extends ServiceManager<Auth, Long> {
             throw new AuthServiceException(ErrorType.INVALID_TOKEN);
         }
 
-        return findAll().stream().map(IAuthMapper.INSTANCE::authToFindAllResponseDto).collect(Collectors.toList());
+        return findAll().stream()
+                .filter(item -> item.getStatus() == EStatus.ACTIVE)
+                .map(IAuthMapper.INSTANCE::authToFindAllResponseDto)
+                .collect(Collectors.toList());
     }
 
     public FindByIdResponseDto findUserById(Long id) {
@@ -192,10 +282,14 @@ public class AuthService extends ServiceManager<Auth, Long> {
             throw new AuthServiceException(ErrorType.USER_NOT_FOUND);
         }
 
-        return IAuthMapper.INSTANCE.authToFindByIdResponseDto(optionalAuth.get());
+        if(optionalAuth.get().getStatus() == EStatus.ACTIVE) {
+            return IAuthMapper.INSTANCE.authToFindByIdResponseDto(optionalAuth.get());
+        } else {
+            throw new AuthServiceException(ErrorType.ACCOUNT_NOT_ACTIVE);
+        }
     }
 
-    public String softDelete(Long id) {
+    public void softDelete(Long id) {
 
         Optional<Auth> optionalAuth = findById(id);
         if (optionalAuth.isEmpty()) {
@@ -207,9 +301,8 @@ public class AuthService extends ServiceManager<Auth, Long> {
         }
 
         optionalAuth.get().setStatus(EStatus.DELETED);
-        save(optionalAuth.get());
+        update(optionalAuth.get());
 
-        return optionalAuth.get().getName() + optionalAuth.get().getSurname() + " user named has been deleted";
     }
 
     public void softUpdate(AuthUpdateModel authUpdateModel) {
@@ -234,12 +327,36 @@ public class AuthService extends ServiceManager<Auth, Long> {
 
     public void createEmployee(EmployeeCreateModel employeeCreateModel) {
 
-        if (repository.existsByEmail(employeeCreateModel.getEmail()) || repository.existsByPhoneNumber(employeeCreateModel.getPhoneNumber()) || repository.existsByIdentityNumber(employeeCreateModel.getIdentityNumber())) {
-            throw new AuthServiceException(ErrorType.PARAMETER_ALREADY_EXISTS);
+        if (repository.existsByEmail(employeeCreateModel.getEmail()) || repository.existsByPhoneNumber(employeeCreateModel.getPhoneNumber())) {
+            throw new AuthServiceException(ErrorType.EMAIL_OR_PHONE_ALREADY_EXISTS);
         }
 
         Auth auth = IAuthMapper.INSTANCE.employeeCreateModelToAuth(employeeCreateModel);
         save(auth);
+
+        EmployeeCreateSetAuthIdModel employeeCreateSetAuthIdModel = EmployeeCreateSetAuthIdModel.builder()
+                .authId(auth.getId())
+                .email(auth.getEmail())
+                .build();
+        employeeCreateSetAuthIdProducer.convertAndSend(employeeCreateSetAuthIdModel);
     }
+
+    public void saveAdmin(AdminSaveModel adminSaveModel) {
+
+        if (repository.existsByEmail(adminSaveModel.getEmail()) || repository.existsByPhoneNumber(adminSaveModel.getPhoneNumber())) {
+            throw new AuthServiceException(ErrorType.EMAIL_OR_PHONE_ALREADY_EXISTS);
+        }
+
+        Auth auth = IAuthMapper.INSTANCE.adminSaveModelToAuth(adminSaveModel);
+        save(auth);
+
+        AdminSaveSetAuthIdModel adminSaveSetAuthIdModel = AdminSaveSetAuthIdModel.builder()
+                .authId(auth.getId())
+                .email(auth.getEmail())
+                .build();
+        adminSaveSetAuthIdProducer.convertAndSend(adminSaveSetAuthIdModel);
+    }
+
+
 
 }

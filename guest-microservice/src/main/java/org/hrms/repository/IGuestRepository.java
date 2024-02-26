@@ -22,6 +22,6 @@ public interface IGuestRepository extends JpaRepository<Guest,Long> {
 
     Boolean existsByEmail(String email);  //Parametre olarak girilen emailin veritabanında olup olmadığını kontrol ediyoruz.
     Boolean existsByPhoneNumber(String phoneNumber); //Parametre olarak girilen telefon numarasının veritabanında olup olmadığını kontrol ediyoruz.
-    Optional<Guest> findByAuthId(Long authId); //Parametre olarak girilen authId'ye göre veritabanını kontrol edip geriye optional olarak bir Guest dönüyor.
+    Optional<Guest> findOptionalByAuthId(Long authId); //Parametre olarak girilen authId'ye göre veritabanını kontrol edip geriye optional olarak bir Guest dönüyor.
 
 }

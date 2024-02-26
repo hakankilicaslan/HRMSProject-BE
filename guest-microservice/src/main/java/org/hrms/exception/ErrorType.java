@@ -30,6 +30,7 @@ public enum ErrorType {
     ACCOUNT_ALREADY_ACTIVE(1009,"Account is already active..." ,HttpStatus.BAD_REQUEST),
     EMAIL_OR_PHONE_ALREADY_EXISTS(1010,"This email address or phone number has already been registered...",HttpStatus.BAD_REQUEST),
     PARAMETER_ALREADY_EXISTS(1011,"This email address, phone number or identity number has already been registered...",HttpStatus.BAD_REQUEST),
+    ACCOUNT_BANNED(1012,"Sorry, your account has been blocked...",HttpStatus.BAD_REQUEST),
 
     COMPANY_NAME_NOT_FOUND(4001,"Company name not found..." ,HttpStatus.BAD_REQUEST),
     USER_NOT_FOUND(4004,"User not found..." ,HttpStatus.BAD_REQUEST),

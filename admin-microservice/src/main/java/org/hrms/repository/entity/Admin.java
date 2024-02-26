@@ -48,22 +48,39 @@ public class Admin extends BaseEntity {
     @Column(unique = true)
     private Long authId;
 
-    private String name;
-    private String surname;
-    private String password;
-    private String address;
-
-    @Column(unique = true) //Bu anotasyonu kullanarak ve true işaretleyerek emailin eşsiz olmasını başkası tarafından alınamamasını sağlıyoruz. Bu kontrolü entity sınıfında yaparak veritabanına manuel eklerken de bu koşulu sağlamasını istiyoruz.
+    /*
+     * @Column: Alanın veritabanında bir sütuna karşılık geldiğini belirtir. Bu koşulları burada entity sınıfında da yaparak veritabanına manuel eklerken de bu koşulları sağlamasını istiyoruz.
+     * unique = true diyerek girilen değerin eşsiz olmasını sağlıyoruz ve veritabanında o değer önceden girilmişse tekrar kullanılmamasını sağlıyoruz.
+     * nullable = false diyerek bir değer girilmeden null olarak atanamsına izin vermiyoruz.
+     * length = 40 diyerek girilen değerin maksimum 40 karakterden oluşmasını sağlıyoruz.
+     */
+    @Column(unique = true, nullable = false, length = 40)
     private String email;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false, length = 11)
     private String phoneNumber;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false, length = 11)
     private String identityNumber;
 
-    @Enumerated(EnumType.STRING) //Bu anotasyonu kullanarak enum sabitlerinin veritabanında String olarak tutulmasını sağlıyoruz.
-    @Builder.Default //@Builder.Default anotasyonu kullanarak eğer statüsü belirtilmediyse default olarak aşağıda belirttiğimiz gibi EMPLOYEE olarak atanmasını sağlıyoruz.
+    @Column(nullable = false, length = 40)
+    private String name;
+
+    @Column(nullable = false, length = 40)
+    private String surname;
+
+    @Column(nullable = false, length = 32)
+    private String password;
+
+    @Column(nullable = false, length = 100)
+    private String address;
+
+    /*
+     * @Enumerated: Alanın bir enum tipine karşılık geldiğini belirtir ve (EnumType.STRING) veritabanında String olarak tutulmasını sağlıyoruz.
+     * @Builder.Default: Alanın default olarak nasıl atanacağını belirtiyoruz. ERole.ADMIN diyerek statüsü belirtilmediyse ADMIN olarak atanmasını sağlıyoruz.
+     */
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
     private ERole role = ERole.ADMIN;
 
     @Enumerated(EnumType.STRING)

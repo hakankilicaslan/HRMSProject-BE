@@ -57,23 +57,60 @@ public class AdminService extends ServiceManager<Admin, Long> {
         return IAdminMapper.INSTANCE.adminToAdminSaveResponseDto(admin);
     }
 
+    public void setAuthId(AdminSaveSetAuthIdModel model) {
+
+        Optional<Admin> optionalAdmin = repository.findOptionalByEmail(model.getEmail());
+        if (optionalAdmin.isEmpty()) {
+            throw new AdminServiceException(ErrorType.USER_NOT_FOUND);
+        }
+
+        //Burada model ile gelen authId önceden kaydedilmiş mi diye bakmaya gerek var mı
+
+        optionalAdmin.get().setAuthId(model.getAuthId());
+        update(optionalAdmin.get());
+    }
+
     public String softUpdate(AdminUpdateRequestDto dto) {
 
         Optional<Admin> optionalAdmin = findById(dto.getId());
         if (optionalAdmin.isEmpty()) {
             throw new AdminServiceException(ErrorType.USER_NOT_FOUND);
         }
-        Admin admin = optionalAdmin.get();
+        Admin updatedAdmin = optionalAdmin.get();
 
-        if (admin.getStatus().equals(EStatus.DELETED)) {
+        if (updatedAdmin.getStatus().equals(EStatus.DELETED)) {
             throw new AdminServiceException(ErrorType.USER_ALREADY_DELETED);
         }
 
-        if (repository.existsByEmail(admin.getEmail()) || repository.existsByPhoneNumber(admin.getPhoneNumber()) || repository.existsByIdentityNumber(admin.getIdentityNumber())) {
+        if (repository.existsByEmail(dto.getEmail()) || repository.existsByPhoneNumber(dto.getPhoneNumber()) || repository.existsByIdentityNumber(dto.getIdentityNumber())) {
             throw new AdminServiceException(ErrorType.PARAMETER_ALREADY_EXISTS);
         }
 
-        Admin updatedAdmin = IAdminMapper.INSTANCE.adminUpdateRequestDtoToAdmin(dto);
+        if (dto.getName() != null) {
+            updatedAdmin.setName(dto.getName());
+        }
+        if (dto.getSurname() != null) {
+            updatedAdmin.setSurname(dto.getSurname());
+        }
+        if (dto.getPhoneNumber() != null) {
+            updatedAdmin.setPhoneNumber(dto.getPhoneNumber());
+        }
+        if (dto.getIdentityNumber() != null) {
+            updatedAdmin.setIdentityNumber(dto.getIdentityNumber());
+        }
+        if (dto.getEmail() != null) {
+            updatedAdmin.setEmail(dto.getEmail());
+        }
+        if (dto.getPassword() != null) {
+            updatedAdmin.setPassword(dto.getPassword());
+        }
+        if (dto.getAddress() != null) {
+            updatedAdmin.setAddress(dto.getAddress());
+        }
+        if (dto.getGender() != null) {
+            updatedAdmin.setGender(dto.getGender());
+        }
+
         update(updatedAdmin);
 
         AuthUpdateModel authUpdateModel = IAdminMapper.INSTANCE.adminToAuthUpdateModel(updatedAdmin);
@@ -95,18 +132,21 @@ public class AdminService extends ServiceManager<Admin, Long> {
         }
 
         deletedAdmin.setStatus(EStatus.DELETED);
-        save(deletedAdmin);
+        update(deletedAdmin);
 
         authDeleteProducer.convertAndSend(AuthDeleteModel.builder()
                 .authId(deletedAdmin.getAuthId())
                 .status(deletedAdmin.getStatus())
                 .build());
 
-        return deletedAdmin.getName() + deletedAdmin.getSurname() + " user named has been deleted";
+        return deletedAdmin.getName() + " " + deletedAdmin.getSurname() + " user named has been deleted";
     }
 
     public List<FindAllAdminsResponseDto> findAllAdmins() {
-        return findAll().stream().map(IAdminMapper.INSTANCE::adminToFindAllAdminsResponseDto).collect(Collectors.toList());
+        return findAll().stream()
+                .filter(item -> item.getStatus() == EStatus.ACTIVE)
+                .map(IAdminMapper.INSTANCE::adminToFindAllAdminsResponseDto)
+                .collect(Collectors.toList());
     }
 
     public FindAdminByIdResponseDto findAdminById(Long id) {
@@ -116,7 +156,11 @@ public class AdminService extends ServiceManager<Admin, Long> {
             throw new AdminServiceException(ErrorType.USER_NOT_FOUND);
         }
 
-        return IAdminMapper.INSTANCE.adminToFindAdminByIdResponseDto(optionalAdmin.get());
+        if(optionalAdmin.get().getStatus() == EStatus.ACTIVE) {
+            return IAdminMapper.INSTANCE.adminToFindAdminByIdResponseDto(optionalAdmin.get());
+        } else {
+            throw new AdminServiceException(ErrorType.ACCOUNT_NOT_ACTIVE);
+        }
     }
 
     public FindAdminByIdResponseDto findAdminByAuthId(Long authId) {
@@ -126,7 +170,13 @@ public class AdminService extends ServiceManager<Admin, Long> {
             throw new AdminServiceException(ErrorType.USER_NOT_FOUND);
         }
 
-        return IAdminMapper.INSTANCE.adminToFindAdminByIdResponseDto(optionalAdmin.get());
+        if(optionalAdmin.get().getStatus() == EStatus.ACTIVE) {
+            return IAdminMapper.INSTANCE.adminToFindAdminByIdResponseDto(optionalAdmin.get());
+        } else {
+            throw new AdminServiceException(ErrorType.ACCOUNT_NOT_ACTIVE);
+        }
     }
+
+
 
 }

@@ -33,7 +33,6 @@ public interface IAdminMapper {
     Admin adminSaveRequestDtoToAdmin(AdminSaveRequestDto dto);
     AdminSaveResponseDto adminToAdminSaveResponseDto(Admin admin);
     AdminSaveModel adminToAdminSaveModel(Admin admin);
-    Admin adminUpdateRequestDtoToAdmin(AdminUpdateRequestDto dto);
     AuthUpdateModel adminToAuthUpdateModel(Admin admin);
     FindAllAdminsResponseDto adminToFindAllAdminsResponseDto(Admin admin);
     FindAdminByIdResponseDto adminToFindAdminByIdResponseDto(Admin admin);

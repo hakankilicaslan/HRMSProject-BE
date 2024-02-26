@@ -47,6 +47,16 @@ public class RabbitMqConfig {
     @Value("${rabbitmq.mail-bindingKey}")
     private String mailBindingKey;
 
+    @Value("${rabbitmq.mail-forgot-password-queue}")
+    private String mailForgotPasswordQueueName;
+    @Value("${rabbitmq.mail-forgot-password-bindingKey}")
+    private String mailForgotPasswordBindingKey;
+
+    @Value("${rabbitmq.mail-create-employee-queue}")
+    private String mailCreateEmployeeQueueName;
+    @Value("${rabbitmq.mail-create-employee-bindingKey}")
+    private String mailCreateEmployeeBindingKey;
+
     @Value("${rabbitmq.auth-update-queue}")
     private String authUpdateQueueName;
     @Value("${rabbitmq.auth-update-bindingKey}")
@@ -72,6 +82,11 @@ public class RabbitMqConfig {
     @Value("${rabbitmq.admin-delete-bindingKey}")
     private String adminDeleteBindingKey;
 
+    @Value("${rabbitmq.admin-set-authid-queue}")
+    private String adminSetAuthIdQueueName;
+    @Value("${rabbitmq.admin-set-authid-bindingKey}")
+    private String adminSetAuthIdBindingKey;
+
     @Value("${rabbitmq.manager-save-queue}")
     private String managerSaveQueueName;
     @Value("${rabbitmq.manager-save-bindingKey}")
@@ -86,6 +101,11 @@ public class RabbitMqConfig {
     private String managerDeleteQueueName;
     @Value("${rabbitmq.manager-delete-bindingKey}")
     private String managerDeleteBindingKey;
+
+    @Value("${rabbitmq.manager-activate-status-queue}")
+    private String managerActivateStatusQueueName;
+    @Value("${rabbitmq.manager-activate-status-bindingKey}")
+    private String managerActivateStatusBindingKey;
 
     @Value("${rabbitmq.manager-forgot-password-queue}")
     private String managerForgotPasswordQueueName;
@@ -137,6 +157,11 @@ public class RabbitMqConfig {
     @Value("${rabbitmq.employee-delete-bindingKey}")
     private String employeeDeleteBindingKey;
 
+    @Value("${rabbitmq.employee-set-authid-queue}")
+    private String employeeSetAuthIdQueueName;
+    @Value("${rabbitmq.employee-set-authid-bindingKey}")
+    private String employeeSetAuthIdBindingKey;
+
     @Value("${rabbitmq.employee-forgot-password-queue}")
     private String employeeForgotPasswordQueueName;
     @Value("${rabbitmq.employee-forgot-password-bindingKey}")
@@ -156,6 +181,11 @@ public class RabbitMqConfig {
     private String guestDeleteQueueName;
     @Value("${rabbitmq.guest-delete-bindingKey}")
     private String guestDeleteBindingKey;
+
+    @Value("${rabbitmq.guest-activate-status-queue}")
+    private String guestActivateStatusQueueName;
+    @Value("${rabbitmq.guest-activate-status-bindingKey}")
+    private String guestActivateStatusBindingKey;
 
     @Value("${rabbitmq.guest-forgot-password-queue}")
     private String guestForgotPasswordQueueName;
@@ -215,8 +245,8 @@ public class RabbitMqConfig {
      * Kullanacağımız bindingKey içinde yukarıda yml dosyasından yolunu vererek karşılık gelen değeri alan guestRegisterBindingKey değişkeni veriyoruz.
      */
     @Bean
-    public Binding bindingGuestRegister(Queue guestRegisterQueue, DirectExchange authExchange){
-        return BindingBuilder.bind(guestRegisterQueue).to(authExchange).with(guestRegisterBindingKey);
+    public Binding bindingGuestRegister(Queue guestRegisterQueue, DirectExchange guestExchange){
+        return BindingBuilder.bind(guestRegisterQueue).to(guestExchange).with(guestRegisterBindingKey);
     }
 
     @Bean
@@ -225,8 +255,8 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    public Binding bindingCompanyRegister(Queue companyRegisterQueue, DirectExchange authExchange){
-        return BindingBuilder.bind(companyRegisterQueue).to(authExchange).with(companyRegisterBindingKey);
+    public Binding bindingCompanyRegister(Queue companyRegisterQueue, DirectExchange managerExchange){
+        return BindingBuilder.bind(companyRegisterQueue).to(managerExchange).with(companyRegisterBindingKey);
     }
 
     @Bean
@@ -235,8 +265,28 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    public Binding bindingMail(Queue mailQueue, DirectExchange authExchange){
-        return BindingBuilder.bind(mailQueue).to(authExchange).with(mailBindingKey);
+    public Binding bindingMail(Queue mailQueue, DirectExchange mailExchange){
+        return BindingBuilder.bind(mailQueue).to(mailExchange).with(mailBindingKey);
+    }
+
+    @Bean
+    Queue mailForgotPasswordQueue(){
+        return new Queue(mailForgotPasswordQueueName);
+    }
+
+    @Bean
+    public Binding bindingMailForgotPassword(Queue mailForgotPasswordQueue, DirectExchange mailExchange){
+        return BindingBuilder.bind(mailForgotPasswordQueue).to(mailExchange).with(mailForgotPasswordBindingKey);
+    }
+
+    @Bean
+    Queue mailCreateEmployeeQueue(){
+        return new Queue(mailCreateEmployeeQueueName);
+    }
+
+    @Bean
+    public Binding bindingMailCreateEmployee(Queue mailCreateEmployeeQueue, DirectExchange mailExchange){
+        return BindingBuilder.bind(mailCreateEmployeeQueue).to(mailExchange).with(mailCreateEmployeeBindingKey);
     }
 
     @Bean
@@ -265,8 +315,8 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    public Binding bindingAdminSave(Queue adminSaveQueue, DirectExchange adminExchange){
-        return BindingBuilder.bind(adminSaveQueue).to(adminExchange).with(adminSaveBindingKey);
+    public Binding bindingAdminSave(Queue adminSaveQueue, DirectExchange authExchange){
+        return BindingBuilder.bind(adminSaveQueue).to(authExchange).with(adminSaveBindingKey);
     }
 
     @Bean
@@ -287,6 +337,16 @@ public class RabbitMqConfig {
     @Bean
     public Binding bindingAdminDelete(Queue adminDeleteQueue, DirectExchange adminExchange){
         return BindingBuilder.bind(adminDeleteQueue).to(adminExchange).with(adminDeleteBindingKey);
+    }
+
+    @Bean
+    Queue adminSetAuthIdQueue(){
+        return new Queue(adminSetAuthIdQueueName);
+    }
+
+    @Bean
+    public Binding bindingAdminSetAuthIdQueue(Queue adminSetAuthIdQueue, DirectExchange adminExchange){
+        return BindingBuilder.bind(adminSetAuthIdQueue).to(adminExchange).with(adminSetAuthIdBindingKey);
     }
 
     @Bean
@@ -317,6 +377,16 @@ public class RabbitMqConfig {
     @Bean
     public Binding bindingManagerDelete(Queue managerDeleteQueue, DirectExchange managerExchange){
         return BindingBuilder.bind(managerDeleteQueue).to(managerExchange).with(managerDeleteBindingKey);
+    }
+
+    @Bean
+    Queue managerActivateStatusQueue(){
+        return new Queue(managerActivateStatusQueueName);
+    }
+
+    @Bean
+    public Binding bindingManagerActivateStatus(Queue managerActivateStatusQueue, DirectExchange managerExchange){
+        return BindingBuilder.bind(managerActivateStatusQueue).to(managerExchange).with(managerActivateStatusBindingKey);
     }
 
     @Bean
@@ -365,8 +435,8 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    public Binding bindingManagerAddEmployee(Queue managerAddEmployeeQueue, DirectExchange managerExchange){
-        return BindingBuilder.bind(managerAddEmployeeQueue).to(managerExchange).with(managerAddEmployeeBindingKey);
+    public Binding bindingManagerAddEmployee(Queue managerAddEmployeeQueue, DirectExchange authExchange){
+        return BindingBuilder.bind(managerAddEmployeeQueue).to(authExchange).with(managerAddEmployeeBindingKey);
     }
 
     @Bean
@@ -430,6 +500,16 @@ public class RabbitMqConfig {
     }
 
     @Bean
+    Queue employeeSetAuthIdQueue(){
+        return new Queue(employeeSetAuthIdQueueName);
+    }
+
+    @Bean
+    public Binding bindingEmployeeSetAuthIdQueue(Queue employeeSetAuthIdQueue, DirectExchange employeeExchange){
+        return BindingBuilder.bind(employeeSetAuthIdQueue).to(employeeExchange).with(employeeSetAuthIdBindingKey);
+    }
+
+    @Bean
     Queue guestSaveQueue(){
         return new Queue(guestSaveQueueName);
     }
@@ -457,6 +537,16 @@ public class RabbitMqConfig {
     @Bean
     public Binding bindingGuestDelete(Queue guestDeleteQueue, DirectExchange guestExchange){
         return BindingBuilder.bind(guestDeleteQueue).to(guestExchange).with(guestDeleteBindingKey);
+    }
+
+    @Bean
+    Queue guestActivateStatusQueue(){
+        return new Queue(guestActivateStatusQueueName);
+    }
+
+    @Bean
+    public Binding bindingGuestActivateStatus(Queue guestActivateStatusQueue, DirectExchange guestExchange){
+        return BindingBuilder.bind(guestActivateStatusQueue).to(guestExchange).with(guestActivateStatusBindingKey);
     }
 
     @Bean

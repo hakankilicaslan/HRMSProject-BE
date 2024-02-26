@@ -12,6 +12,7 @@ public class ApiUrls {
     public static final String DELETE_BY_ID = "/delete-by-id/{id}";
     public static final String FIND_ALL = "/find-all";
     public static final String FIND_BY_ID = "/find-by-id/{id}";
+    public static final String ACTIVATE = "/activate";
     public static final String UPDATE_PASSWORD = "/update-password";
     public static final String SAVE="/save";
     public static final String UPDATE="/update";

@@ -1,6 +1,7 @@
 package org.hrms.repository.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hrms.repository.enums.*;
@@ -45,25 +46,34 @@ public class Auth extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    private String surname;
-
-    @Column(unique = true) //Bu anotasyonu kullanarak ve true işaretleyerek emailin eşsiz olmasını başkası tarafından alınamamasını sağlıyoruz. Bu kontrolü entity sınıfında yaparak veritabanına manuel eklerken de bu koşulu sağlamasını istiyoruz.
+    /*
+     * @Column: Alanın veritabanında bir sütuna karşılık geldiğini belirtir. Bu koşulları burada entity sınıfında da yaparak veritabanına manuel eklerken de bu koşulları sağlamasını istiyoruz.
+     * unique = true diyerek girilen değerin eşsiz olmasını sağlıyoruz ve veritabanında o değer önceden girilmişse tekrar kullanılmamasını sağlıyoruz.
+     * nullable = false diyerek bir değer girilmeden null olarak atanamsına izin vermiyoruz.
+     * length = 40 diyerek girilen değerin maksimum 40 karakterden oluşmasını sağlıyoruz.
+     */
+    @Column(unique = true, nullable = false, length = 40)
     private String email;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false, length = 11)
     private String phoneNumber;
 
-    @Column(unique = true)
-    private String identityNumber;
+    @Column(nullable = false, length = 40)
+    private String name;
 
+    @Column(nullable = false, length = 40)
+    private String surname;
+
+    @Column(nullable = false, length = 32)
     private String password;
-    private String activationCode;
 
-    @Enumerated(EnumType.STRING) //Bu anotasyonu kullanarak enum sabitlerinin veritabanında String olarak tutulmasını sağlıyoruz.
-    @Builder.Default //@Builder.Default anotasyonu kullanarak eğer statüsü belirtilmediyse default olarak aşağıda belirttiğimiz gibi PENDING olarak atanmasını sağlıyoruz.
-    private EStatus status = EStatus.ACTIVE;
-    //private EStatus status = EStatus.PENDING; PENDING olduğunda giriş yapamadığımız için şimdilik metotları denemek için ACTIVE yaptık.
+    /*
+     * @Enumerated: Alanın bir enum tipine karşılık geldiğini belirtir ve (EnumType.STRING) veritabanında String olarak tutulmasını sağlıyoruz.
+     * @Builder.Default: Alanın default olarak nasıl atanacağını belirtiyoruz. EStatus.PENDING diyerek statüsü belirtilmediyse PENDING olarak atanmasını sağlıyoruz.
+     */
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private EStatus status = EStatus.PENDING;
 
     @Enumerated(EnumType.STRING)
     private ERole role;

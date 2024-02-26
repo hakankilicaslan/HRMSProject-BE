@@ -33,7 +33,6 @@ public interface IEmployeeMapper {
     Employee employeeCreateRequestDtoToEmployee(EmployeeCreateRequestDto dto);
     EmployeeCreateResponseDto employeeToEmployeeCreateResponseDto(Employee employee);
     EmployeeCreateModel employeeToEmployeeCreateModel(Employee employee);
-    Employee employeeUpdateRequestDtoToEmployee(EmployeeUpdateRequestDto dto);
     AuthUpdateModel employeeToAuthUpdateModel(Employee employee);
     FindAllEmployeesResponseDto employeeToFindAllEmployeesResponseDto(Employee employee);
     FindEmployeeByIdResponseDto employeeToFindEmployeeByIdResponseDto(Employee employee);

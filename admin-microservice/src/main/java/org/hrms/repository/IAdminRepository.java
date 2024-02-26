@@ -24,5 +24,5 @@ public interface IAdminRepository extends JpaRepository<Admin,Long> {
     Boolean existsByPhoneNumber(String phoneNumber); //Parametre olarak girilen telefon numarasının veritabanında olup olmadığını kontrol ediyoruz.
     Boolean existsByIdentityNumber(String identityNumber); //Parametre olarak girilen kimlik numarasının veritabanında olup olmadığını kontrol ediyoruz.
     Optional<Admin> findOptionalByAuthId(Long authId); //Parametre olarak girilen authId'ye göre veritabanını kontrol edip geriye optional olarak bir Admin dönüyor.
-
+    Optional<Admin> findOptionalByEmail(String email); //Parametre olarak girilen email'e göre veritabanını kontrol edip geriye optional olarak bir Admin dönüyor.
 }

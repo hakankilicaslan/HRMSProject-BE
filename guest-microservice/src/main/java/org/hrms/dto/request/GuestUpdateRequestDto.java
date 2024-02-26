@@ -1,6 +1,7 @@
 package org.hrms.dto.request;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -29,26 +30,27 @@ public class GuestUpdateRequestDto {
     private Long id;
 
     /*
-     * @Size anotasyonu da @NotEmpty gibi bir kısıtlama anotasyonudur ve kullanıcının girdiği name değişkeninin minimum 3 maksimum 20 karakterde olmasını sağlar.
-     * message = "Name must be between 3 and 20 characters." diyerekte karakter sayısı tutmadığında bu mesajı içeren bir doğrulama hatası gönderir.
+     * @Size anotasyonu da bir kısıtlama anotasyonudur ve kullanıcının girdiği name değişkeninin minimum 3 maksimum 40 karakterde olmasını sağlar.
+     * message = "Name must be between 3 and 40 characters." diyerekte karakter sayısı tutmadığında bu mesajı içeren bir doğrulama hatası gönderir.
      */
-    @Size(min = 3, max = 20, message = "Name must be between 3 and 20 characters.")
+    @Size(min = 3, max = 40, message = "Name must be between 3 and 40 characters.")
     private String name;
 
-    @Size(min = 3, max = 20, message = "Surname must be between 3 and 20 characters.")
+    @Size(min = 3, max = 40, message = "Surname must be between 3 and 40 characters.")
     private String surname;
+
+    //@Size kısmında hem min hem max 11 diyerek kimlik numarasının 11 karakter olması ve @Pattern kısmında regexp içinde de sadece rakam girilmesi şartını koyuyoruz.
+    @Size(min = 11, max = 11, message = "Phone number must be 11 characters.")
+    @Pattern(regexp = "[0-9]+", message = "Phone number must contain only digits.")
+    private String phoneNumber;
 
     /*
      * @Email anotasyonu bir kısıtlama anotasyonudur ve kullanıcının girdiği e-posta adresinin doğru formatını kontrol etmek için kullanılır.
      * message = "Please enter a valid email address." diyerekte geçerli bir e-posta adresi girilmezse bu mesajı içeren bir doğrulama hatası gönderir.
      */
     @Email(message = "Please enter a valid email address.")
+    @Size(min = 3, max = 40, message = "Email must be between 3 and 40 characters.")
     private String email;
-
-    //@Size kısmında hem min hem max 11 diyerek kimlik numarasının 11 karakter olması ve @Pattern kısmında regexp içinde de sadece rakam girilmesi şartını koyuyoruz.
-    @Size(min = 11, max = 11, message = "Phone number must be 11 characters.")
-    @Pattern(regexp = "[0-9]+", message = "Phone number must contain only digits.")
-    private String phoneNumber;
 
     /*
      * @Pattern anotasyonu bir kısıtlama anotasyonudur ve gerekli alanın regexp içinde verilen kurala göre doldurulmasını sağlar.

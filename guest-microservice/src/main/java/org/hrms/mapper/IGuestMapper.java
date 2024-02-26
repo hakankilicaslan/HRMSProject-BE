@@ -27,7 +27,6 @@ public interface IGuestMapper {
      */
     IGuestMapper INSTANCE = Mappers.getMapper(IGuestMapper.class);
 
-    Guest guestUpdateRequestDtoToGuest(GuestUpdateRequestDto dto);
     AuthUpdateModel guestToAuthUpdateModel(Guest guest);
     FindAllGuestsResponseDto guestToFindAllGuestsResponseDto(Guest guest);
     FindGuestByIdResponseDto guestToFindGuestByIdResponseDto(Guest guest);

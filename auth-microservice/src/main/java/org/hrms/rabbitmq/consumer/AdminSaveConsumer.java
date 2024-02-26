@@ -28,17 +28,6 @@ public class AdminSaveConsumer {
      */
     @RabbitListener(queues = "${rabbitmq.admin-save-queue}")
     public void saveAdminFromQueue(AdminSaveModel model){
-        Auth auth = Auth.builder()
-                .name(model.getName())
-                .surname(model.getSurname())
-                .email(model.getEmail())
-                .password(model.getPassword())
-                .phoneNumber(model.getPhoneNumber())
-                .identityNumber(model.getIdentityNumber())
-                .role(model.getRole())
-                .gender(model.getGender())
-                .status(EStatus.ACTIVE)
-                .build();
-        authService.save(auth);
+        authService.saveAdmin(model);
     }
 }

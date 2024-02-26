@@ -1,5 +1,7 @@
 package org.hrms.dto.request;
 
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,78 +31,77 @@ import java.time.LocalDate;
 public class EmployeeCreateRequestDto {
 
     /*
-     * @NotEmpty, Java için Bean Validation API'si tarafından sağlanan bir kısıtlama(constraint) anotasyonudur ve gerekli alanın boş geçilemeyeceğini belirtir.
-     * @NotEmpty kullanımında gerekli alan null olamaz ve boş bırakılamaz yani en az 1 karakter girilmelidir ama bu karakter boşluk bile olabilir.
-     *
-     * @Size anotasyonu da @NotEmpty gibi bir kısıtlama anotasyonudur ve kullanıcının girdiği name değişkeninin minimum 3 maksimum 20 karakterde olmasını sağlar.
-     * message = "Name must be between 3 and 20 characters." diyerekte karakter sayısı tutmadığında bu mesajı içeren bir doğrulama hatası gönderir.
+     * @NotNull, @NotEmpty ve @NotBlank Java için Bean Validation API'si tarafından sağlanan bir kısıtlama(constraint) anotasyonudur.
+     * @NotNull, bir alanın null olmadığını kontrol eder ancak içeriğin boş olup olmadığını kontrol etmez.
+     * @NotEmpty, bir alanın null olmadığını ve içeriğinin boş olmadığını kontrol eder. En az bir karakter olmalıdır ama bu karakter boşluk bile olabilir.
+     * @NotBlank, bir alanın null olmadığını, içeriğinin boş olmadığını ve içeriğin sadece boşluklardan oluşmadığını kontrol eder.
      */
-    @NotEmpty(message = "Name field cannot be empty.")
-    @Size(min = 3, max = 20, message = "Name must be between 3 and 20 characters.")
+
+    /*
+     * @Size anotasyonu da bir kısıtlama anotasyonudur ve kullanıcının girdiği name değişkeninin minimum 3 maksimum 40 karakterde olmasını sağlar.
+     * message = "Name must be between 3 and 40 characters." diyerekte karakter sayısı tutmadığında bu mesajı içeren bir doğrulama hatası gönderir.
+     */
+    @NotBlank(message = "Name field cannot be blank.")
+    @Size(min = 3, max = 40, message = "Name must be between 3 and 40 characters.")
     private String name;
 
-    @NotEmpty(message = "Surname field cannot be empty")
-    @Size(min = 3, max = 20, message = "Surname must be between 3 and 20 characters.")
+    @NotBlank(message = "Surname field cannot be blank.")
+    @Size(min = 3, max = 40, message = "Surname must be between 3 and 40 characters.")
     private String surname;
+
+    //@Size kısmında hem min hem max 11 diyerek kimlik numarasının 11 karakter olması ve @Pattern kısmında regexp içinde de sadece rakam girilmesi şartını koyuyoruz.
+    @NotNull(message = "Phone number field cannot be null." )
+    @Size(min = 11, max = 11, message = "Phone number must be 11 characters.")
+    @Pattern(regexp = "[0-9]+", message = "Phone number must contain only digits.")
+    private String phoneNumber;
+
+    @NotNull(message = "Identity number field cannot be null.")
+    @Size(min = 11, max = 11, message = "Identity number must be 11 characters.")
+    @Pattern(regexp = "[0-9]+", message = "Identity number must contain only digits.")
+    private String identityNumber;
 
     /*
      * @Email anotasyonu bir kısıtlama anotasyonudur ve kullanıcının girdiği e-posta adresinin doğru formatını kontrol etmek için kullanılır.
      * message = "Please enter a valid email address." diyerekte geçerli bir e-posta adresi girilmezse bu mesajı içeren bir doğrulama hatası gönderir.
      */
     @Email(message = "Please enter a valid email address.")
+    @Size(min = 3, max = 40, message = "Email must be between 3 and 40 characters.")
     private String email;
 
-    /*
-     * @NotBlank anotasyonu bir kısıtlama anotasyonudur ve gerekli alanın boş geçilemeyeceğini belirtir.
-     * @NotBlank kullanımında gerekli alan null olamaz ve boş bırakılamaz ayrıca sadece boşluk kabul etmez yani çift tırnakta kabul etmiyor.
-     *
-     * @Pattern anotasyonu bir kısıtlama anotasyonudur ve gerekli alanın regexp içinde verilen kurala göre doldurulmasını sağlar.
-     * Bu kural şifrenin en az 8 en fazla 32 karakter olması ve en az bir büyük harf, bir küçük harf, bir rakam ve bir özel karakter içermesini zorunlu kılar.
-     * Bu kural sağlanmadığında ise message kısmındaki yazıyı içeren bir doğrulama hatası gönderir.
-     */
-    @NotBlank(message = "Password cannot be empty.")
-    @Pattern(message = "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.",
-            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=*!])(?=\\S+$).{8,32}$")
-    private String password;
+    @Email(message = "Please enter a valid email address.")
+    private String personalEmail;
 
-    private String rePassword;
-
-    //@Size kısmında hem min hem max 11 diyerek kimlik numarasının 11 karakter olması ve @Pattern kısmında regexp içinde de sadece rakam girilmesi şartını koyuyoruz.
-    @NotEmpty(message = "Phone field cannot be empty." )
-    @Size(min = 11, max = 11, message = "Phone number must be 11 characters.")
-    @Pattern(regexp = "[0-9]+", message = "Phone number must contain only digits.")
-    private String phoneNumber;
-
-    @NotEmpty(message = "Identity number field cannot be empty.")
-    @Size(min = 11, max = 11, message = "Identity number must be 11 characters.")
-    @Pattern(regexp = "[0-9]+", message = "Identity number must contain only digits.")
-    private String identityNumber;
-
-    @NotEmpty(message = "Address field cannot be empty.")
+    @NotBlank(message = "Address field cannot be blank.")
+    @Size(min = 3, max = 100, message = "Address must be between 3 and 100 characters.")
     private String address;
 
-    @NotEmpty(message = "Date of birth field cannot be empty.")
-    private LocalDate dateOfBirth;
-
-    @NotEmpty(message = "Company name field cannot be empty.")
+    @NotBlank(message = "Company name field cannot be blank.")
+    @Size(min = 3, max = 40, message = "Company name must be between 3 and 40 characters.")
     private String companyName;
 
-    @NotEmpty(message = "Gender field cannot be empty.")
-    private EGender gender;
-
-    @NotEmpty(message = "Title field cannot be empty.")
+    @NotBlank(message = "Title field cannot be blank.")
+    @Size(min = 3, max = 40, message = "Title must be between 3 and 40 characters.")
     private String title;
 
-    @NotEmpty(message = "Photo field cannot be empty.")
-    private String photo;
-
-    @NotEmpty(message = "Salary field cannot be empty.")
+    @NotBlank(message = "Salary field cannot be blank.")
     private Double salary;
 
-    @Builder.Default //@Builder.Default anotasyonu kullanarak eğer statüsü belirtilmediyse default olarak aşağıda belirttiğimiz gibi EMPLOYEE olarak atanmasını sağlıyoruz.
-    private ERole role = ERole.EMPLOYEE;
+    @NotBlank(message = "Photo field cannot be blank.")
+    private String photo;
 
-    @Builder.Default
+    @NotNull(message = "Status field cannot be null.")
+    @Builder.Default //@Builder.Default: Alanın default olarak nasıl atanacağını belirtiyoruz. EStatus.ACTIVE diyerek statüsü belirtilmediyse ACTIVE olarak atanmasını sağlıyoruz.
     private EStatus status = EStatus.ACTIVE;
+
+    @NotNull(message = "Gender field cannot be null.") //@NotEmpty anotasyonu ekleyince hata verdi ondan dolayı @NotNull yaptım.
+    private EGender gender;
+
+    /*
+     * @Temporal, JPA tarafından sağlanan ve veritabanında bir tarih/saat alanını nasıl saklayacağını belirttiğimiz bir anotasyondur.
+     * Değişkenimizin türü bir LocalDate yani DATE olduğu için ve saat bilgisi içermediği için TemporalType.DATE olarak işaretliyoruz.
+     */
+    @NotNull(message = "Date of birth field cannot be null.") //@NotEmpty anotasyonu ekleyince hata verdi ondan dolayı @NotNull yaptım.
+    @Temporal(TemporalType.DATE)
+    private LocalDate dateOfBirth;
 
 }

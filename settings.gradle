@@ -10,4 +10,5 @@ include 'employee-microservice'
 include 'manager-microservice'
 include 'admin-microservice'
 include 'company-service'
+include 'mail-service'
 
