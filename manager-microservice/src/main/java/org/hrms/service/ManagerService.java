@@ -165,7 +165,7 @@ public class ManagerService extends ServiceManager<Manager, Long>  {
         }
     }
 
-    public FindManagerByIdResponseDto findManagerByCompanyId(Long companyId) {
+    public FindManagerByIdResponseDto findManagerByCompanyId(String companyId) {
 
         Optional<Manager> optionalManager = repository.findOptionalByCompanyId(companyId);
         if (optionalManager.isEmpty()) {

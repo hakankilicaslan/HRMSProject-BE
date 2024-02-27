@@ -2,6 +2,7 @@ package org.hrms.repository.entity;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hrms.repository.enums.EStatus;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.util.List;
@@ -39,14 +40,28 @@ public class Company extends BaseEntity{
     @MongoId
     private String id;
 
-    private Long authId;
+    private String companyName;
+    private String companyPhone;
+    private String infoEmail;
+    private String companyAddress;
+    private String establishmentDate;
+    private String city;
+    private String taxId;
+    private String logo;
     private Long employeeId;
-    private Long companyId;
-    private String name;
-    List<Double> salaries;
-    List<String> employees;
-    List<String> managers;
-    List<Long> shifts;
-    List<Long> holidays;
+    private Long managerId;
+    private Long revenue;
+    private Long expense;
+    private Long profit;
+    private Long loss;
+    private Long netIncome;
+    private List<Double> salaries;
+    private List<String> employees;
+    private List<String> managers;
+    private List<Long> shifts;
+    private List<Long> holidays;
+
+    @Builder.Default
+    private EStatus status=EStatus.NOT_AUTHORIZED;
 
 }

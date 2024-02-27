@@ -25,9 +25,9 @@ public interface IManagerRepository extends JpaRepository<Manager,Long> {
     Boolean existsByPhoneNumber(String phoneNumber); //Parametre olarak girilen telefon numarasının veritabanında olup olmadığını kontrol ediyoruz.
     Boolean existsByIdentityNumber(String identityNumber); //Parametre olarak girilen kimlik numarasının veritabanında olup olmadığını kontrol ediyoruz.
     Boolean existsByAuthId(Long authId); //Parametre olarak girilen authId veritabanında olup olmadığını kontrol ediyoruz.
-    Boolean existsByCompanyId(Long authId); //Parametre olarak girilen companyId veritabanında olup olmadığını kontrol ediyoruz.
+    Boolean existsByCompanyId(String authId); //Parametre olarak girilen companyId veritabanında olup olmadığını kontrol ediyoruz.
     Optional<Manager> findOptionalByAuthId(Long authId); //Parametre olarak girilen authId'ye göre veritabanını kontrol edip geriye optional olarak bir Manager dönüyor.
-    Optional<Manager> findOptionalByCompanyId(Long companyId); //Parametre olarak girilen companyId'ye göre veritabanını kontrol edip geriye optional olarak bir Manager dönüyor.
+    Optional<Manager> findOptionalByCompanyId(String companyId); //Parametre olarak girilen companyId'ye göre veritabanını kontrol edip geriye optional olarak bir Manager dönüyor.
     Boolean existsByCompanyName(String companyName); //Parametre olarak girilen şirket adının veritabanında olup olmadığını kontrol ediyoruz.
     List<Manager> findManagersByCompanyName(String companyName); //Parametre olarak girilen şirket adına sahip kullanıcıların bilgilerini Manager listesi olarak dönüyor.
 

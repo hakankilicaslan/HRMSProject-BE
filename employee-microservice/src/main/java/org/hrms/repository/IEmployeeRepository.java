@@ -25,9 +25,9 @@ public interface IEmployeeRepository extends JpaRepository<Employee,Long> {
     Boolean existsByPhoneNumber(String phoneNumber); //Parametre olarak girilen telefon numarasının veritabanında olup olmadığını kontrol ediyoruz.
     Boolean existsByIdentityNumber(String identityNumber); //Parametre olarak girilen kimlik numarasının veritabanında olup olmadığını kontrol ediyoruz.
     Boolean existsByAuthId(Long authId); //Parametre olarak girilen authId veritabanında olup olmadığını kontrol ediyoruz.
-    Boolean existsByCompanyId(Long authId); //Parametre olarak girilen companyId veritabanında olup olmadığını kontrol ediyoruz.
+    Boolean existsByCompanyId(String companyId); //Parametre olarak girilen companyId veritabanında olup olmadığını kontrol ediyoruz.
     Optional<Employee> findOptionalByAuthId(Long authId); //Parametre olarak girilen authId'ye göre veritabanını kontrol edip geriye optional olarak bir Employee dönüyor.
-    Optional<Employee> findOptionalByCompanyId(Long companyId); //Parametre olarak girilen companyId'ye göre veritabanını kontrol edip geriye optional olarak bir Employee dönüyor.
+    Optional<Employee> findOptionalByCompanyId(String companyId); //Parametre olarak girilen companyId'ye göre veritabanını kontrol edip geriye optional olarak bir Employee dönüyor.
     Boolean existsByCompanyName(String companyName); //Parametre olarak girilen şirket adının veritabanında olup olmadığını kontrol ediyoruz.
     List<Employee> findEmployeesByCompanyName(String companyName); //Parametre olarak girilen şirket adına sahip kullanıcıların bilgilerini Employee listesi olarak dönüyor.
     Optional<Employee> findOptionalByEmail(String email); //Parametre olarak girilen email'e göre veritabanını kontrol edip geriye optional olarak bir Employee dönüyor.

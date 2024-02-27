@@ -85,7 +85,7 @@ public class ManagerController {
     }
 
     @GetMapping(FIND_BY_COMPANY_ID)
-    public ResponseEntity<FindManagerByIdResponseDto> findManagerByCompanyId(@PathVariable Long companyId) { //Path verirken constant tarafına da {companyId} olarak vermezsek hata alıyoruz.
+    public ResponseEntity<FindManagerByIdResponseDto> findManagerByCompanyId(@PathVariable String companyId) { //Path verirken constant tarafına da {companyId} olarak vermezsek hata alıyoruz.
         return ResponseEntity.ok(managerService.findManagerByCompanyId(companyId));
     }
 

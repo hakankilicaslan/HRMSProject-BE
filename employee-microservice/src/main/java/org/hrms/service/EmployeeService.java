@@ -217,7 +217,7 @@ public class EmployeeService extends ServiceManager<Employee, Long> {
         }
     }
 
-    public FindEmployeeByIdResponseDto findEmployeeByCompanyId(Long companyId) {
+    public FindEmployeeByIdResponseDto findEmployeeByCompanyId(String companyId) {
 
         Optional<Employee> optionalEmployee = repository.findOptionalByCompanyId(companyId);
         if (optionalEmployee.isEmpty()) {

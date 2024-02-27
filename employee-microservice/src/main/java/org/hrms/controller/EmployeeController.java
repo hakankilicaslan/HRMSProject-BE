@@ -92,7 +92,7 @@ public class EmployeeController {
     }
 
     @GetMapping(FIND_BY_COMPANY_ID)
-    public ResponseEntity<FindEmployeeByIdResponseDto> findEmployeeByCompanyId(@PathVariable Long companyId) { //Path verirken constant tarafına da {companyId} olarak vermezsek hata alıyoruz.
+    public ResponseEntity<FindEmployeeByIdResponseDto> findEmployeeByCompanyId(@PathVariable String companyId) { //Path verirken constant tarafına da {companyId} olarak vermezsek hata alıyoruz.
         return ResponseEntity.ok(employeeService.findEmployeeByCompanyId(companyId));
     }
 
