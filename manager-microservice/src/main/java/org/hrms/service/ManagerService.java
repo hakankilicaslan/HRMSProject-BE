@@ -6,11 +6,10 @@ import org.hrms.dto.response.FindManagerByIdResponseDto;
 import org.hrms.exception.ErrorType;
 import org.hrms.exception.ManagerServiceException;
 import org.hrms.mapper.IManagerMapper;
-import org.hrms.rabbitmq.model.AuthDeleteModel;
-import org.hrms.rabbitmq.model.AuthForgotPasswordModel;
-import org.hrms.rabbitmq.model.AuthUpdateModel;
+import org.hrms.rabbitmq.model.*;
 import org.hrms.rabbitmq.producer.AuthDeleteProducer;
 import org.hrms.rabbitmq.producer.AuthUpdateProducer;
+import org.hrms.rabbitmq.producer.CompanySetManagerIdProducer;
 import org.hrms.repository.IManagerRepository;
 import org.hrms.repository.entity.Manager;
 import org.hrms.repository.enums.EStatus;
@@ -35,12 +34,14 @@ public class ManagerService extends ServiceManager<Manager, Long>  {
     private final IManagerRepository repository;
     private final AuthUpdateProducer authUpdateProducer;
     private final AuthDeleteProducer authDeleteProducer;
+    private final CompanySetManagerIdProducer companySetManagerIdProducer;
 
-    public ManagerService(JpaRepository<Manager, Long> jpaRepository, IManagerRepository repository, AuthUpdateProducer authUpdateProducer, AuthDeleteProducer authDeleteProducer) {
+    public ManagerService(JpaRepository<Manager, Long> jpaRepository, IManagerRepository repository, AuthUpdateProducer authUpdateProducer, AuthDeleteProducer authDeleteProducer, CompanySetManagerIdProducer companySetManagerIdProducer) {
         super(jpaRepository);
         this.repository = repository;
         this.authUpdateProducer = authUpdateProducer;
         this.authDeleteProducer = authDeleteProducer;
+        this.companySetManagerIdProducer = companySetManagerIdProducer;
     }
 
     public String softUpdate(ManagerUpdateRequestDto dto) {
@@ -212,5 +213,23 @@ public class ManagerService extends ServiceManager<Manager, Long>  {
 
         optionalManager.get().setPassword(model.getPassword());
         update(optionalManager.get());
+    }
+
+    public void setCompanyId(ManagerSetCompanyIdModel model) {
+
+        Optional<Manager> optionalManager = repository.findOptionalByCompanyName(model.getCompanyName());
+        if (optionalManager.isEmpty()) {
+            throw new ManagerServiceException(ErrorType.USER_NOT_FOUND);
+        }
+        Manager manager = optionalManager.get();
+
+        manager.setCompanyId(model.getCompanyId());
+        update(manager);
+
+        CompanySetManagerIdModel companySetManagerIdModel = CompanySetManagerIdModel.builder()
+                .managerId(manager.getId())
+                .companyName(manager.getCompanyName())
+                .build();
+        companySetManagerIdProducer.convertAndSend(companySetManagerIdModel);
     }
 }

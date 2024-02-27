@@ -1,5 +1,8 @@
 package org.hrms.mapper;
 
+import org.hrms.dto.request.CompanySaveRequestDto;
+import org.hrms.dto.request.CompanySaveResponseDto;
+import org.hrms.repository.entity.Company;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
@@ -21,4 +24,7 @@ public interface ICompanyMapper {
      * ICompanyMapper arayüzünün bir örneğini oluşturup kullanarak, bu arayüze tanımlı olan dönüşüm metotlarına erişebiliyor ve bu metotları kullanarak nesne dönüşümlerini gerçekleştirebiliyoruz.
      */
     ICompanyMapper INSTANCE = Mappers.getMapper(ICompanyMapper.class);
+
+    Company companySaveRequestDtoToCompany(CompanySaveRequestDto dto);
+    CompanySaveResponseDto companyToCompanySaveResponseDto(Company company);
 }

@@ -142,6 +142,11 @@ public class RabbitMqConfig {
     @Value("${rabbitmq.manager-deleteEmployee-bindingKey}")
     private String managerDeleteEmployeeBindingKey;
 
+    @Value("${rabbitmq.manager-set-company-id-queue}")
+    private String managerSetCompanyIdQueueName;
+    @Value("${rabbitmq.manager-set-company-id-bindingKey}")
+    private String managerSetCompanyIdBindingKey;
+
     @Value("${rabbitmq.employee-save-queue}")
     private String employeeSaveQueueName;
     @Value("${rabbitmq.employee-save-bindingKey}")
@@ -191,6 +196,11 @@ public class RabbitMqConfig {
     private String guestForgotPasswordQueueName;
     @Value("${rabbitmq.guest-forgot-password-bindingKey}")
     private String guestForgotPasswordBindingKey;
+
+    @Value("${rabbitmq.company-set-manager-id-queue}")
+    private String companySetManagerIdQueueName;
+    @Value("${rabbitmq.company-set-manager-id-bindingKey}")
+    private String companySetManagerIdBindingKey;
 
     /*
      * @Bean ile işaretlediğimizde metot her çağırıldığında bir nesne üretiyor ve bu nesne Spring Container'ında yönetilen bir bean olarak kaydediliyor.
@@ -460,6 +470,16 @@ public class RabbitMqConfig {
     }
 
     @Bean
+    Queue managerSetCompanyIdQueue(){
+        return new Queue(managerSetCompanyIdQueueName);
+    }
+
+    @Bean
+    public Binding bindingManagerSetCompanyId(Queue managerSetCompanyIdQueue, DirectExchange managerExchange){
+        return BindingBuilder.bind(managerSetCompanyIdQueue).to(managerExchange).with(managerSetCompanyIdBindingKey);
+    }
+
+    @Bean
     Queue employeeSaveQueue(){
         return new Queue(employeeSaveQueueName);
     }
@@ -557,6 +577,16 @@ public class RabbitMqConfig {
     @Bean
     public Binding bindingGuestForgotPassword(Queue guestForgotPasswordQueue, DirectExchange guestExchange){
         return BindingBuilder.bind(guestForgotPasswordQueue).to(guestExchange).with(guestForgotPasswordBindingKey);
+    }
+
+    @Bean
+    Queue companySetManagerIdQueue(){
+        return new Queue(companySetManagerIdQueueName);
+    }
+
+    @Bean
+    public Binding bindingCompanySetManagerId(Queue companySetManagerIdQueue, DirectExchange companyExchange){
+        return BindingBuilder.bind(companySetManagerIdQueue).to(companyExchange).with(companySetManagerIdBindingKey);
     }
 
     /*

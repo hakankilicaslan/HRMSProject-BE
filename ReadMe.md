@@ -7,7 +7,7 @@ docker run -d --hostname my-rabbit --name some-rabbit -p 5672:5672 -p 15672:1567
 RabbitMQ kullanımında deserilize işlemi sırasında hata almamak için deserilize edecek microservice'in Environment Variable(Ortam Değişkenleri) kısmına üsteki yazı eklenmelidir.
 Environment Variable olarak eklerken ilgili service'in application'ına eklenmelidir yani AuthMicroservice için AuthMicroserviceApplication içine eklenmelidir.
 AuthMicroserviceApplication üzerine sağ tıklayıp More Run/Debug -> Modify Run Configuration diyerek açılan pencerede Modify options kısmından Environment Variable seçerek Key-Value şeklinde eklenmelidir.
-(auth-microservice, user-microservice, guest-microservice, employee-microservice, manager-microservice, admin-microservice, companyservice için applicationlara uygulandı.)
+(auth-microservice, user-microservice, guest-microservice, employee-microservice, manager-microservice, admin-microservice, company-service için applicationlara uygulandı.)
 
 ## JwtTokenManager Secret Key ve Issuer
 SecretKey ve Issuer bilgilerimizi gizlemek için Environment Variable(Ortam Değişkenleri) kullanacağız. Denetim masasından ortam değişkenler içine de key-value olarak ekleyebiliriz.

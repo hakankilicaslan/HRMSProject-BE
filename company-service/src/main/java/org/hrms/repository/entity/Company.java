@@ -1,8 +1,12 @@
 package org.hrms.repository.entity;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.validator.constraints.Length;
 import org.hrms.repository.enums.EStatus;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.util.List;
@@ -40,28 +44,48 @@ public class Company extends BaseEntity{
     @MongoId
     private String id;
 
-    private String companyName;
-    private String companyPhone;
-    private String infoEmail;
-    private String companyAddress;
-    private String establishmentDate;
-    private String city;
-    private String taxId;
-    private String logo;
-    private Long employeeId;
+    @Indexed(unique = true)
     private Long managerId;
+
+    /*
+     * @Indexed: Belirli alanların dizinlenmesini sağlayan ve veritabanı işlemlerinin daha hızlı ve verimli olmasını sağlayan bir Spring Data MongoDB özelliğidir.
+     * unique = true diyerek girilen değerin eşsiz olmasını sağlıyoruz ve veritabanında o değer önceden girilmişse tekrar kullanılmamasını sağlıyoruz.
+     * @NotNull: Alanın değer girilmeden null olarak atanamasına izin vermiyoruz.
+     * @Column: Alanın veritabanında bir sütuna karşılık geldiğini belirtir. Bu koşulları burada entity sınıfında da yaparak veritabanına manuel eklerken de bu koşulları sağlamasını istiyoruz.
+     * @Size: Alanın uzunluğunu belirtiyoruz ve min=3 ve max=40 diyerek en az 3 en fazla 40 karakterden oluşmasını sağlıyoruz.
+     */
+    @Indexed(unique = true)
+    @NotNull
+    @Size(min = 3, max = 40)
+    private String companyName;
+
+    @Indexed(unique = true)
+    @NotNull
+    @Length(min = 11, max = 11) //@Length anoasyonu için hem min hem max olarak 11 vererek bu alanın sadece 11 karakterden oluşmasını sağlıyoruz.
+    private String companyPhoneNumber;
+
+    @Indexed(unique = true)
+    @NotNull
+    @Size(min = 3, max = 40)
+    private String infoEmail;
+
+    @NotNull
+    @Size(min = 3, max = 100)
+    private String companyAddress;
+
+    private String logo;
     private Long revenue;
     private Long expense;
     private Long profit;
     private Long loss;
     private Long netIncome;
     private List<Double> salaries;
-    private List<String> employees;
-    private List<String> managers;
+    private List<Long> employees;
     private List<Long> shifts;
     private List<Long> holidays;
 
+    //@Builder.Default: Alanın default olarak nasıl atanacağını belirtiyoruz. EStatus.ACTIVE diyerek statüsü belirtilmediyse ACTIVE olarak atanmasını sağlıyoruz.
     @Builder.Default
-    private EStatus status=EStatus.NOT_AUTHORIZED;
+    private EStatus status = EStatus.ACTIVE;
 
 }

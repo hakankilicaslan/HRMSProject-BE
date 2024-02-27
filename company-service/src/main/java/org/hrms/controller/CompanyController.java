@@ -1,10 +1,12 @@
 package org.hrms.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.hrms.dto.request.CompanySaveRequestDto;
+import org.hrms.dto.request.CompanySaveResponseDto;
 import org.hrms.service.CompanyService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import static org.hrms.constant.ApiUrls.*;
 
 /*
@@ -42,4 +44,15 @@ import static org.hrms.constant.ApiUrls.*;
 public class CompanyController {
 
     private final CompanyService companyService;
+
+    /*
+     * @RequestBody anotasyonu HTTP isteğinin gövdesindeki (request body) verilerin, bir metot parametresine otomatik olarak bağlanmasını sağlar. POST ve PUT isteklerinde kullanılır.
+     * Bu anotasyon, Spring tarafından otomatik olarak HTTP isteğinin gövdesini uygun bir Java nesnesine dönüştürmek için kullanılır.
+     * Bu sayede, gönderilen verilerin manuel olarak çözülmesine veya dönüştürülmesine gerek kalmaz, Spring bunu otomatik olarak yapar ve metot parametresine bağlar.
+     * Bu anotasyon sayesinde gönderilen POST isteğinde URL kısmında girilen parametrelerin de body içinde gizler ve güvenli şekilde istek atılmasını sağlar.
+     */
+    @PostMapping(SAVE)
+    public ResponseEntity<CompanySaveResponseDto> saveCompany(@RequestBody CompanySaveRequestDto dto){
+        return ResponseEntity.ok(companyService.saveCompany(dto));
+    }
 }

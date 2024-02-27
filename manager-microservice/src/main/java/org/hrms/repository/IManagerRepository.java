@@ -30,5 +30,5 @@ public interface IManagerRepository extends JpaRepository<Manager,Long> {
     Optional<Manager> findOptionalByCompanyId(String companyId); //Parametre olarak girilen companyId'ye göre veritabanını kontrol edip geriye optional olarak bir Manager dönüyor.
     Boolean existsByCompanyName(String companyName); //Parametre olarak girilen şirket adının veritabanında olup olmadığını kontrol ediyoruz.
     List<Manager> findManagersByCompanyName(String companyName); //Parametre olarak girilen şirket adına sahip kullanıcıların bilgilerini Manager listesi olarak dönüyor.
-
+    Optional<Manager> findOptionalByCompanyName(String companyName); //Parametre olarak girilen şirket adına göre veritabanını kontrol edip geriye optional olarak bir Manager dönüyor.
 }

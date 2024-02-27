@@ -1,13 +1,9 @@
 package org.hrms.dto.request;
 
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hrms.repository.enums.EGender;
-import org.hrms.repository.enums.ERole;
-import org.hrms.repository.enums.EStatus;
+import lombok.*;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 /*
  * @NoArgsConstructor anotasyonu sınıflar için default bir boş constructor oluşturur. Sınıfın hiçbir argüman(parametre) almayan bir constructor'a sahip olmasını sağlar.
@@ -24,7 +20,7 @@ import org.hrms.repository.enums.EStatus;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AdminSaveRequestDto {
+public class CompanySaveRequestDto {
 
     /*
      * @NotNull, @NotEmpty ve @NotBlank Java için Bean Validation API'si tarafından sağlanan bir kısıtlama(constraint) anotasyonudur.
@@ -37,24 +33,15 @@ public class AdminSaveRequestDto {
      * @Size anotasyonu da bir kısıtlama anotasyonudur ve kullanıcının girdiği name değişkeninin minimum 3 maksimum 40 karakterde olmasını sağlar.
      * message = "Name must be between 3 and 40 characters." diyerekte karakter sayısı tutmadığında bu mesajı içeren bir doğrulama hatası gönderir.
      */
-    @NotBlank(message = "Name field cannot be blank.")
-    @Size(min = 3, max = 40, message = "Name must be between 3 and 40 characters.")
-    private String name;
-
-    @NotBlank(message = "Surname field cannot be blank.")
-    @Size(min = 3, max = 40, message = "Surname must be between 3 and 40 characters.")
-    private String surname;
+    @NotBlank(message = "Company name field cannot be blank.")
+    @Size(min = 3, max = 40, message = "Company name must be between 3 and 40 characters.")
+    private String companyName;
 
     //@Size kısmında hem min hem max 11 diyerek telefon numarasının 11 karakter olması ve @Pattern kısmında regexp içinde de sadece rakam girilmesi şartını koyuyoruz.
     @NotNull(message = "Phone number field cannot be null." )
     @Size(min = 11, max = 11, message = "Phone number must be 11 characters.")
     @Pattern(regexp = "[0-9]+", message = "Phone number must contain only digits.")
-    private String phoneNumber;
-
-    @NotNull(message = "Identity number field cannot be null.")
-    @Size(min = 11, max = 11, message = "Identity number must be 11 characters.")
-    @Pattern(regexp = "[0-9]+", message = "Identity number must contain only digits.")
-    private String identityNumber;
+    private String companyPhoneNumber;
 
     /*
      * @Email anotasyonu bir kısıtlama anotasyonudur ve kullanıcının girdiği e-posta adresinin doğru formatını kontrol etmek için kullanılır.
@@ -62,34 +49,11 @@ public class AdminSaveRequestDto {
      */
     @Email(message = "Please enter a valid email address.")
     @Size(min = 3, max = 40, message = "Email must be between 3 and 40 characters.")
-    private String email;
+    private String infoEmail;
 
-    /*
-     * @Pattern anotasyonu bir kısıtlama anotasyonudur ve gerekli alanın regexp içinde verilen kurala göre doldurulmasını sağlar.
-     * Bu kural şifrenin en az 8 en fazla 32 karakter olması ve en az bir büyük harf, bir küçük harf, bir rakam ve bir özel karakter içermesini zorunlu kılar.
-     * Bu kural sağlanmadığında ise message kısmındaki yazıyı içeren bir doğrulama hatası gönderir.
-     */
-    @NotBlank(message = "Password field cannot be blank.")
-    @Pattern(message = "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.",
-            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=*!])(?=\\S+$).{8,32}$")
-    private String password;
+    @NotBlank(message = "Company address field cannot be blank.")
+    @Size(min = 3, max = 100, message = "Company address must be between 3 and 100 characters.")
+    private String companyAddress;
 
-    @NotBlank(message = "Password field cannot be blank.")
-    private String rePassword;
-
-    @NotBlank(message = "Address field cannot be blank.")
-    @Size(min = 3, max = 100, message = "Address must be between 3 and 100 characters.")
-    private String address;
-
-    @NotNull(message = "Role field cannot be null.")
-    @Builder.Default //@Builder.Default: Alanın default olarak nasıl atanacağını belirtiyoruz. ERole.ADMIN diyerek rolü belirtilmediyse ADMIN olarak atanmasını sağlıyoruz.
-    private ERole role = ERole.ADMIN;
-
-    @NotNull(message = "Status field cannot be null.")
-    @Builder.Default
-    private EStatus status = EStatus.ACTIVE;
-
-    @NotNull(message = "Gender field cannot be null.")
-    private EGender gender;
-
+    private String logo;
 }

@@ -100,6 +100,9 @@ rabbitmq:
   manager-deleteEmployee-queue: managerDeleteEmployeeQueue
   manager-deleteEmployee-bindingKey: managerDeleteEmployeeBindingKey
 
+  manager-set-company-id-queue: managerSetCompanyIdQueue
+  manager-set-company-id-bindingKey: managerSetCompanyIdBindingKey
+
   employee-save-queue: employeeSaveQueue
   employee-save-bindingKey: employeeSaveBindingKey
 
@@ -129,4 +132,7 @@ rabbitmq:
 
   guest-forgot-password-queue: guestForgotPasswordQueue
   guest-forgot-password-bindingKey: guestForgotPasswordBindingKey
+
+  company-set-manager-id-queue: companySetManagerIdQueue
+  company-set-manager-id-bindingKey: companySetManagerIdBindingKey
 

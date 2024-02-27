@@ -4,6 +4,8 @@ import org.hrms.repository.entity.Company;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /*
  * @Repository anotasyonu, Spring Framework'te veritabanı erişimi için kullanılan sınıfları işaretlemeye yarayan bir anotasyondur.
  * Bu anotasyon, veritabanı işlemlerini gerçekleştiren DAO(Data Access Object) sınıflarını tanımlamak için kullanılır.
@@ -19,4 +21,10 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ICompanyRepository extends MongoRepository<Company, String> {
+
+    Boolean existsByCompanyName(String companyName);  //Parametre olarak girilen şirket isminin veritabanında olup olmadığını kontrol ediyoruz.
+    Boolean existsByCompanyPhoneNumber(String companyPhoneNumber);  //Parametre olarak girilen şirket telefonun veritabanında olup olmadığını kontrol ediyoruz.
+    Boolean existsByInfoEmail(String infoEmail);  //Parametre olarak girilen şirket emailinin veritabanında olup olmadığını kontrol ediyoruz.
+    Optional<Company> findOptionalByCompanyName(String companyName); //Parametre olarak girilen şirket adına göre veritabanını kontrol edip geriye optional olarak bir Company dönüyor.
+
 }
