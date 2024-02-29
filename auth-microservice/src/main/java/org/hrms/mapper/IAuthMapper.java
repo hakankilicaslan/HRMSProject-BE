@@ -46,10 +46,7 @@ public interface IAuthMapper {
      * Burada AuthUpdateModel sınıfındaki authId'yi Auth sınıfındaki id'ye eşitlemiş oluyoruz. İsimleri aynı olmadığı için eşleşmediğinden ignore ediyor.
      * Bunun önüne geçmek için @Mapping anotasyonunu kullanarak kaynak ve hedef değişkenleri yazarak birbiriyle eşleşmesini sağlıyoruz.
      */
-    @Mapping(source = "authId",target = "id")
-    Auth authUpdateModelToAuth(AuthUpdateModel model);
-
-
-
+    /*@Mapping(source = "authId",target = "id")
+    Auth authUpdateModelToAuth(AuthUpdateModel model);*/
 
 }

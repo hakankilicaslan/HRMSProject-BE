@@ -1,7 +1,10 @@
 package org.hrms.mapper;
 
 import org.hrms.dto.request.CompanySaveRequestDto;
-import org.hrms.dto.request.CompanySaveResponseDto;
+import org.hrms.dto.response.CompanySaveResponseDto;
+import org.hrms.dto.response.FindAllCompaniesResponseDto;
+import org.hrms.dto.response.FindCompanyByCompanyNameResponseDto;
+import org.hrms.dto.response.FindCompanyByIdResponseDto;
 import org.hrms.repository.entity.Company;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -27,4 +30,7 @@ public interface ICompanyMapper {
 
     Company companySaveRequestDtoToCompany(CompanySaveRequestDto dto);
     CompanySaveResponseDto companyToCompanySaveResponseDto(Company company);
+    FindAllCompaniesResponseDto companyToFindAllCompaniesResponseDto(Company company);
+    FindCompanyByIdResponseDto companyToFindCompanyByIdResponseDto(Company company);
+    FindCompanyByCompanyNameResponseDto companyToFindCompanyByCompanyNameResponseDto(Company company);
 }

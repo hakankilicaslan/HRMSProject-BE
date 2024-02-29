@@ -26,5 +26,6 @@ public interface ICompanyRepository extends MongoRepository<Company, String> {
     Boolean existsByCompanyPhoneNumber(String companyPhoneNumber);  //Parametre olarak girilen şirket telefonun veritabanında olup olmadığını kontrol ediyoruz.
     Boolean existsByInfoEmail(String infoEmail);  //Parametre olarak girilen şirket emailinin veritabanında olup olmadığını kontrol ediyoruz.
     Optional<Company> findOptionalByCompanyName(String companyName); //Parametre olarak girilen şirket adına göre veritabanını kontrol edip geriye optional olarak bir Company dönüyor.
+    Optional<Company> findOptionalByManagerId(Long managerId); //Parametre olarak girilen managerId'ye göre veritabanını kontrol edip geriye optional olarak bir Company dönüyor.
 
 }

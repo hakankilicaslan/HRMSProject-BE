@@ -6,6 +6,7 @@ import org.hrms.dto.response.FindManagerByIdResponseDto;
 import org.hrms.rabbitmq.model.AuthUpdateModel;
 import org.hrms.repository.entity.Manager;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
@@ -27,8 +28,14 @@ public interface IManagerMapper {
      */
     IManagerMapper INSTANCE = Mappers.getMapper(IManagerMapper.class);
 
-    AuthUpdateModel managerToAuthUpdateModel(Manager manager);
     FindAllManagersResponseDto managerToFindAllManagersResponseDto(Manager manager);
     FindManagerByIdResponseDto managerToFindManagerByIdResponseDto(Manager manager);
+
+    /*
+     * Burada ManagerUpdateRequestDto sınıfındaki id'yi AuthUpdateModel sınıfındaki authId'ye eşitlemiş oluyoruz. İsimleri aynı olmadığı için eşleşmediğinden ignore ediyor.
+     * Bunun önüne geçmek için @Mapping anotasyonunu kullanarak kaynak ve hedef değişkenleri yazarak birbiriyle eşleşmesini sağlıyoruz.
+     */
+    @Mapping(source = "id",target = "authId")
+    AuthUpdateModel managerUpdateRequestDtoToAuthUpdateModel(ManagerUpdateRequestDto dto);
 
 }

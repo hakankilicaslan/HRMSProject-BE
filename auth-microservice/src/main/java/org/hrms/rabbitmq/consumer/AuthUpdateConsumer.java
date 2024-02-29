@@ -1,10 +1,14 @@
 package org.hrms.rabbitmq.consumer;
 
+import com.rabbitmq.client.AMQP;
 import lombok.RequiredArgsConstructor;
-import org.hrms.rabbitmq.model.AuthDeleteModel;
 import org.hrms.rabbitmq.model.AuthUpdateModel;
 import org.hrms.service.AuthService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.support.AmqpHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 /*
@@ -27,7 +31,7 @@ public class AuthUpdateConsumer {
      */
     @RabbitListener(queues = "${rabbitmq.auth-update-queue}")
     public void updateAuthFromQueue(AuthUpdateModel authUpdateModel){
-        authService.softUpdate(authUpdateModel);
+            authService.softUpdate(authUpdateModel);
     }
 
 }

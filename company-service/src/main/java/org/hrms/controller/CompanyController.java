@@ -2,10 +2,16 @@ package org.hrms.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.hrms.dto.request.CompanySaveRequestDto;
-import org.hrms.dto.request.CompanySaveResponseDto;
+import org.hrms.dto.response.CompanySaveResponseDto;
+import org.hrms.dto.request.CompanyUpdateRequestDto;
+import org.hrms.dto.response.FindAllCompaniesResponseDto;
+import org.hrms.dto.response.FindCompanyByCompanyNameResponseDto;
+import org.hrms.dto.response.FindCompanyByIdResponseDto;
 import org.hrms.service.CompanyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.hrms.constant.ApiUrls.*;
 
@@ -55,4 +61,56 @@ public class CompanyController {
     public ResponseEntity<CompanySaveResponseDto> saveCompany(@RequestBody CompanySaveRequestDto dto){
         return ResponseEntity.ok(companyService.saveCompany(dto));
     }
+
+    @PatchMapping(UPDATE)
+    public ResponseEntity<String> softUpdate(@RequestBody CompanyUpdateRequestDto dto){
+        return ResponseEntity.ok(companyService.softUpdate(dto));
+    }
+
+    /*
+     * @PathVariable anotasyonu bir HTTP isteği sırasında URL'deki bir değişkenin değerini dinamik olarak almak için kullanılır.
+     * DELETE_BY_ID endpoint'in sonundaki {id} değeri dinamik olarak alınır ve metot içinde kullanılır.
+     * Bu sayede, URL'de belirtilen kullanıcı kimliğine sahip olan kullanıcı bilgileri alınabilir.
+     */
+    @DeleteMapping(DELETE_BY_ID)
+    public ResponseEntity<String> softDelete(@PathVariable String id){
+        return ResponseEntity.ok(companyService.softDelete(id));
+    }
+
+    @GetMapping(FIND_ALL)
+    public ResponseEntity<List<FindAllCompaniesResponseDto>> findAllCompanies(){
+        return ResponseEntity.ok(companyService.findAllCompanies());
+    }
+
+    @GetMapping(FIND_BY_ID)
+    public ResponseEntity<FindCompanyByIdResponseDto> findCompanyById(@PathVariable String id) {
+        return ResponseEntity.ok(companyService.findCompanyById(id));
+    }
+
+    @GetMapping(FIND_BY_MANAGER_ID)
+    public ResponseEntity<FindCompanyByIdResponseDto> findCompanyByManagerId(@PathVariable Long managerId) { //Path verirken constant tarafına da {managerId} olarak vermezsek hata alıyoruz.
+        return ResponseEntity.ok(companyService.findCompanyByManagerId(managerId));
+    }
+
+    @GetMapping(FIND_BY_COMPANY_NAME)
+    public ResponseEntity<FindCompanyByCompanyNameResponseDto> findCompanyByCompanyName(String companyName) {
+        return ResponseEntity.ok(companyService.findCompanyByCompanyName(companyName));
+    }
+
+    @GetMapping(FIND_NUMBERS_OF_COMPANY)
+    public ResponseEntity<Integer> findNumbersOfCompanies(){
+        return ResponseEntity.ok(companyService.findNumbersOfCompanies());
+    }
+
+
+    /*
+     * @PathVariable ile @RequestParam -> Her ikisi de HTTP isteklerinden parametre almak için kullanılır ancak alınan parametrelerin türleri ve alındıkları yerler farklıdır.
+     * @PathVariable: URL'de yer alan sabit yapıdaki parçaları ({userId} gibi) almak için kullanılır. @RequestParam: URL'den veya HTML formundan gelen query string olarak (?key=value) veya HTML formunda gönderilen parametreleri almak için kullanılır.
+     * @PathVariable: Dinamik URL parçalarını ({userId} gibi) almak için kullanılır. @RequestParam: Query string veya HTML form parametrelerini almak için kullanılır.
+     * @PathVariable: Bu anotasyon varsayılan olarak zorunlu değildir. Yani, eğer URL'deki path variable sağlanmazsa, isteği işleyen metot hata almadan çalışabilir.
+     * @RequestParam: Bu anotasyon varsayılan olarak zorunludur. Eğer istek sırasında ilgili parametre sağlanmazsa, isteği işleyen metot bir hata alabilir veya null bir değerle çalışabilir.
+     * required = false parametresi girilirse belirtilen parametrenin isteğe bağlı olduğunu belirtir yani, bu parametre ile işaretlenmiş bir parametrenin, HTTP isteğinde bulunması gerekmez.
+     * Eğer istek gönderilirken bu parametre sağlanmazsa, ilgili controller metodu çalışacak ve bu parametre null olarak alınacaktır ve metot normal şekilde çalışacaktır.
+     */
+
 }

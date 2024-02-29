@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hrms.repository.enums.EGender;
-
-import java.time.LocalDate;
 
 /*
  * @NoArgsConstructor anotasyonu sınıflar için default bir boş constructor oluşturur. Sınıfın hiçbir argüman(parametre) almayan bir constructor'a sahip olmasını sağlar.
@@ -23,20 +20,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FindAllEmployeesResponseDto {
-    private Long id;
-    private Long authId;
-    private String companyId;
-    private String name;
-    private String surname;
-    private String email;
-    private String phoneNumber;
-    private String identityNumber;
-    private String address;
+public class FindAllCompaniesResponseDto {
+    private String id;
+    private Long managerId;
     private String companyName;
-    private String title;
-    private String photo;
-    private Double salary;
-    private LocalDate dateOfBirth;
-    private EGender gender;
+    private String companyPhoneNumber;
+    private String infoEmail;
+    private String companyAddress;
+    private String about;
+    private String logo;
 }
