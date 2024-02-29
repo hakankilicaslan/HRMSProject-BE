@@ -30,8 +30,8 @@ public class CompanySaveRequestDto {
      */
 
     /*
-     * @Size anotasyonu da bir kısıtlama anotasyonudur ve kullanıcının girdiği name değişkeninin minimum 3 maksimum 40 karakterde olmasını sağlar.
-     * message = "Name must be between 3 and 40 characters." diyerekte karakter sayısı tutmadığında bu mesajı içeren bir doğrulama hatası gönderir.
+     * @Size anotasyonu da bir kısıtlama anotasyonudur ve kullanıcının girdiği company name değişkeninin minimum 3 maksimum 40 karakterde olmasını sağlar.
+     * message = "Company name must be between 3 and 40 characters." diyerekte karakter sayısı tutmadığında bu mesajı içeren bir doğrulama hatası gönderir.
      */
     @NotBlank(message = "Company name field cannot be blank.")
     @Size(min = 3, max = 40, message = "Company name must be between 3 and 40 characters.")
@@ -54,6 +54,8 @@ public class CompanySaveRequestDto {
     @NotBlank(message = "Company address field cannot be blank.")
     @Size(min = 3, max = 100, message = "Company address must be between 3 and 100 characters.")
     private String companyAddress;
+
+    private String about;
 
     private String logo;
 }

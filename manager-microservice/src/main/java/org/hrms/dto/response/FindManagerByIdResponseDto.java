@@ -25,7 +25,7 @@ import java.time.LocalDate;
 public class FindManagerByIdResponseDto {
     private Long id;
     private Long authId;
-    private Long companyId;
+    private String companyId;
     private String name;
     private String surname;
     private String email;

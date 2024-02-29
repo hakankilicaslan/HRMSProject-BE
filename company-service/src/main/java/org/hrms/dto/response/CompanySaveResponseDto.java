@@ -1,4 +1,4 @@
-package org.hrms.dto.request;
+package org.hrms.dto.response;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -25,5 +25,6 @@ public class CompanySaveResponseDto {
     private String companyPhoneNumber;
     private String infoEmail;
     private String companyAddress;
+    private String about;
     private EStatus status;
 }

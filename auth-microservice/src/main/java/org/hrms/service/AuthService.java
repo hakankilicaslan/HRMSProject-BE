@@ -311,8 +311,9 @@ public class AuthService extends ServiceManager<Auth, Long> {
         if (optionalAuth.isEmpty()) {
             throw new AuthServiceException(ErrorType.USER_NOT_FOUND);
         }
+        Auth updatedAuth = optionalAuth.get();
 
-        if (optionalAuth.get().getStatus().equals(EStatus.DELETED)) {
+        if (updatedAuth.getStatus().equals(EStatus.DELETED)) {
             throw new AuthServiceException(ErrorType.USER_ALREADY_DELETED);
         }
 
@@ -320,7 +321,25 @@ public class AuthService extends ServiceManager<Auth, Long> {
             throw new AuthServiceException(ErrorType.EMAIL_OR_PHONE_ALREADY_EXISTS);
         }
 
-        Auth updatedAuth = IAuthMapper.INSTANCE.authUpdateModelToAuth(authUpdateModel);
+        if (authUpdateModel.getName() != null) {
+            updatedAuth.setName(authUpdateModel.getName());
+        }
+        if (authUpdateModel.getSurname() != null) {
+            updatedAuth.setSurname(authUpdateModel.getSurname());
+        }
+        if (authUpdateModel.getPhoneNumber() != null) {
+            updatedAuth.setPhoneNumber(authUpdateModel.getPhoneNumber());
+        }
+        if (authUpdateModel.getEmail() != null) {
+            updatedAuth.setEmail(authUpdateModel.getEmail());
+        }
+        if (authUpdateModel.getPassword() != null) {
+            updatedAuth.setPassword(authUpdateModel.getPassword());
+        }
+        if (authUpdateModel.getGender() != null) {
+            updatedAuth.setGender(authUpdateModel.getGender());
+        }
+
         update(updatedAuth);
     }
 

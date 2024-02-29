@@ -102,7 +102,7 @@ public class ManagerService extends ServiceManager<Manager, Long>  {
 
         update(updatedManager);
 
-        AuthUpdateModel authUpdateModel = IManagerMapper.INSTANCE.managerToAuthUpdateModel(updatedManager);
+        AuthUpdateModel authUpdateModel = IManagerMapper.INSTANCE.managerUpdateRequestDtoToAuthUpdateModel(dto);
         authUpdateProducer.convertAndSend(authUpdateModel);
 
         return "Successfully updated.";

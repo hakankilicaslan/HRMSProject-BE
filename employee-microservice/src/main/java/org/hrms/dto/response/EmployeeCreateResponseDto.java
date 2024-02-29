@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 public class EmployeeCreateResponseDto {
     private Long id;
     private Long authId;
-    private Long companyId;
+    private String companyId;
     private String name;
     private String surname;
     private String email;

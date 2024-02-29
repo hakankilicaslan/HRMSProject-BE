@@ -61,7 +61,7 @@ public class Company extends BaseEntity{
 
     @Indexed(unique = true)
     @NotNull
-    @Length(min = 11, max = 11) //@Length anoasyonu için hem min hem max olarak 11 vererek bu alanın sadece 11 karakterden oluşmasını sağlıyoruz.
+    @Length(min = 11, max = 11) //@Length anotasyonu için hem min hem max olarak 11 vererek bu alanın sadece 11 karakterden oluşmasını sağlıyoruz.
     private String companyPhoneNumber;
 
     @Indexed(unique = true)
@@ -72,6 +72,8 @@ public class Company extends BaseEntity{
     @NotNull
     @Size(min = 3, max = 100)
     private String companyAddress;
+
+    private String about;
 
     private String logo;
     private Long revenue;
