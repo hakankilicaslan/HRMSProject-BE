@@ -34,31 +34,4 @@ public class AuthUpdateConsumer {
             authService.softUpdate(authUpdateModel);
     }
 
-//    @RabbitListener(queues = "${rabbitmq.auth-update-queue}")
-//    @Retryable(value = { Exception.class }, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-//    public void updateAuthFromQueue(AuthUpdateModel authUpdateModel) throws Exception {
-//        try{
-//            authService.softUpdate(authUpdateModel);
-//        }catch(Exception e){
-//            throw e; // This rethrows the exception for retry
-//        }
-//    }
-
-//    @RabbitListener(queues = "${rabbitmq.auth-update-queue}", ackMode = "true")
-//    public void handleMessage(String message) {
-//        // Message processing logic
-//    }
-
-//    @RabbitListener(queues = "${rabbitmq.auth-update-queue}")
-//    public void handleMessage(String message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) {
-//        try {
-//            // Message processing logic
-//            // Acknowledge the message
-//            channel.basicAck(deliveryTag, false); // false indicates not to acknowledge multiple messages
-//        } catch (Exception e) {
-//            // Handle exceptions and optionally reject the message
-//            channel.basicNack(deliveryTag, false, true); // Requeue the message if true
-//        }
-//    }
-
 }
